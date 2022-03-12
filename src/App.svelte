@@ -1,10 +1,12 @@
 <script lang="ts">
-	export let name: string;
+import GameArea from "./lib/GameArea.svelte";
+
+	export let name: string = "Ardauq";
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>{name}</h1>
+	<GameArea/>
 </main>
 
 <style>
@@ -16,7 +18,7 @@
 	}
 
 	h1 {
-		color: #ff3e00;
+		color: green;
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
