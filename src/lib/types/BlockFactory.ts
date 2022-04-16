@@ -1,12 +1,16 @@
 
+import { IBlock } from "./blocks/IBlock";
 import { ZBlock } from "./blocks/ZBlock";
 import { TetrisBlock } from "./TetrisBlock";
 
 export class BlockFactory {
 
-    static GenerateRandom(): TetrisBlock {
+    static GenerateRandomBlock(): TetrisBlock {
 
-        return new ZBlock();
+        switch (Math.floor(Math.random() * 2)) {
+            case 0: return new ZBlock();
+            case 1: return new IBlock();
+        }
 
     }
 }

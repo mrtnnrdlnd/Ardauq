@@ -4,6 +4,8 @@
     // import { GameGrid } from "./types/GameGrid";
     import { ZBlock } from "./types/blocks/ZBlock";
 import { GameGrid } from "./types/GameGrid";
+import UnitBlock from "./components/UnitBlock.svelte";
+import { BlockFactory } from "./types/BlockFactory";
 
     let areaWidth: number = 10;
     let areaHeight: number = 20;
@@ -27,7 +29,7 @@ import { GameGrid } from "./types/GameGrid";
 
     let blocks: TetrisBlock[] = [];
 
-    let activeBlock: TetrisBlock = new ZBlock();
+    let activeBlock: TetrisBlock = BlockFactory.GenerateRandomBlock();
     activeBlock.position = {x: 3, y: 0};
 
     let key;
@@ -62,7 +64,7 @@ import { GameGrid } from "./types/GameGrid";
 
     function update(progress) {
 
-        // activeBlock.position.y += progress/500;
+        activeBlock.position.y += progress/500;
 
         if (Math.abs(Math.round(activeBlock.position.y) - activeBlock.position.y) < 0.05) {
             activeBlock.blocks.forEach(unitBlock => {
@@ -83,7 +85,7 @@ import { GameGrid } from "./types/GameGrid";
                 console.log(gameGrid)
 
                 // blocks = [...blocks, activeBlock];
-                activeBlock = new ZBlock();
+                activeBlock = BlockFactory.GenerateRandomBlock();
                 activeBlock.position = {x: 3, y: 0};
                                  
                 }
@@ -95,7 +97,7 @@ import { GameGrid } from "./types/GameGrid";
                 console.log(gameGrid)
 
                 // blocks = [...blocks, activeBlock];
-                activeBlock = new ZBlock();
+                activeBlock = BlockFactory.GenerateRandomBlock();
                 activeBlock.position = {x: 3, y: 0};
             }
             // else if (activeBlock.position.y + unitBlock.position.y + 1 >= 20) {
@@ -146,7 +148,7 @@ import { GameGrid } from "./types/GameGrid";
         {#each row.column as column, j}
             {#if column.occupied}
                 {console.log(column)}
-                <rect x="{j * blockSize}" y="{i * blockSize}" width="{blockSize}" height="{blockSize}" stroke="black" stroke-width="1" fill={column.color}/>
+                <UnitBlock x={j * blockSize} y={i * blockSize} size="{blockSize}" block={column}/>
             {/if}
         {/each}
     {/each}
