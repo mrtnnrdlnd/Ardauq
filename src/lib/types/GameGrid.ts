@@ -1,3 +1,5 @@
+import { Coordinate } from "./Coordinate";
+
 export interface GameGrid {
     row:BlockRow[];
 }
@@ -7,7 +9,13 @@ export interface BlockRow {
 }
 
 export interface UnitBlock {
-    occupied:boolean;
+    position?:Coordinate;
+    occupied?:boolean;
     color?:string;
-    connectedTo?:{row:number, column:number}[];
+    connected?:{
+        up:boolean,
+        right:boolean,
+        down:boolean,
+        left:boolean
+    };
 }

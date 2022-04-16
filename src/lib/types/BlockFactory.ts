@@ -1,4 +1,5 @@
-import { ZBlock } from "./Blocks";
+
+import { ZBlock } from "./blocks/ZBlock";
 import { TetrisBlock } from "./TetrisBlock";
 
 export class BlockFactory {
