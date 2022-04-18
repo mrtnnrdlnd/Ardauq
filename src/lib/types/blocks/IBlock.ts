@@ -1,6 +1,6 @@
-import { TetrisBlock } from "../TetrisBlock";
+import { FourBlock } from "../FourBlock";
 
-export class IBlock extends TetrisBlock {
+export class IBlock extends FourBlock {
     constructor() {
         super();
         this._possibleRotations = {

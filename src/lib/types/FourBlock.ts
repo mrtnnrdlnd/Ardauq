@@ -1,7 +1,7 @@
 import { Coordinate } from "./Coordinate";
 import { UnitBlock } from "./GameGrid";
 
-export class TetrisBlock {
+export class FourBlock {
     protected _position: Coordinate = {x:0, y:0};
     protected _rotation: number = 0;
     protected _color: string;
@@ -25,12 +25,20 @@ export class TetrisBlock {
         return this._rotation;
     }
 
+    public set rotation(rotation:number) {
+        this._rotation = rotation;
+    }
+
     public get blocks() {
         this._blocks.forEach(block => {
             block.color = this._color;
             block.occupied = true;
         });
         return this._blocks;
+    }
+
+    public set blocks(blocks:UnitBlock[]) {
+        this._blocks = blocks;
     }
 
     public rotateClockwise() {
@@ -69,18 +77,6 @@ export class TetrisBlock {
     public set color(color:string) {
         this._color = color;
     }
-
-    public blockedByOther(blocks: TetrisBlock[]): boolean {
-
-        return false;
-    }
-
-    public reachOther(blocks: TetrisBlock[]): boolean {
-
-        return false;
-    }
-
-
     
 }
 

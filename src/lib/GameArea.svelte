@@ -1,133 +1,132 @@
 <script lang="ts">
-    import Block from "./components/Block.svelte";
-    import {TetrisBlock} from "./types/TetrisBlock"
-    // import { GameGrid } from "./types/GameGrid";
-    import { ZBlock } from "./types/blocks/ZBlock";
-import { GameGrid } from "./types/GameGrid";
-import UnitBlock from "./components/UnitBlock.svelte";
-import { BlockFactory } from "./types/BlockFactory";
+    import Block from "./components/FourBlockComponent.svelte";
+    import {FourBlock} from "./types/FourBlock"
+    import { GameGrid, UnitBlock } from "./types/GameGrid";
+    import { BlockFactory } from "./types/BlockFactory";
+import UnitBlockComponent from "./components/UnitBlockComponent.svelte";
 
-    let areaWidth: number = 10;
+    let areaWidth: number = 8;
     let areaHeight: number = 20;
     let blockSize: number = 30;
+
+    export let paused: boolean = true;
 
     let gameGrid: GameGrid = {
         row:[]
     };
 
     // initialize gamegrid
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < areaHeight; i++) {
         gameGrid.row.push({column:[]});
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < areaWidth; j++) {
             gameGrid.row[i].column.push({occupied:false});
         }
-    } 
-    // gameGrid.row.push({column:[]});
-    //     for (let j = 0; j < 10; j++) {
-    //         gameGrid.row[20].column.push({occupied:true});
-    //     }
+    }
 
-    let blocks: TetrisBlock[] = [];
-
-    let activeBlock: TetrisBlock = BlockFactory.GenerateRandomBlock();
-    activeBlock.position = {x: 3, y: 0};
+    let activeBlock: FourBlock = BlockFactory.GenerateRandomBlock();
+    activeBlock.position = {x: 2, y: 0};
 
     let key;
 	let keyCode;
+
+    let blockCopy: FourBlock = new FourBlock();
     
     function handleKeydown(event) {
 
-
-
-		key = event.key;
-		keyCode = event.keyCode;
+        key = event.key;
+        keyCode = event.keyCode;
 
         if(key === 'd') {
             activeBlock.rotateClockwise();
+            if (invalidPosition(activeBlock, gameGrid)) {
+                activeBlock.rotateCounterClockwise();
+            }
         }
         if(key === 's') {
             activeBlock.rotateTwice();
+            if (invalidPosition(activeBlock, gameGrid)) {
+                activeBlock.rotateTwice();
+            }
         }
         if(key === 'a') {
             activeBlock.rotateCounterClockwise();
+            if (invalidPosition(activeBlock, gameGrid)) {
+                activeBlock.rotateClockwise();
+            }
         }
-
 
         if(key === 'ArrowLeft') {
             activeBlock.position.x -= 1;
+            if (invalidPosition(activeBlock, gameGrid)) {
+                activeBlock.position.x += 1;
+            }
         }
-        if(key === 'ArrowRight' && activeBlock.position.x < areaWidth) {
+
+        if(key === 'ArrowRight') {
             activeBlock.position.x += 1;
+            if (invalidPosition(activeBlock, gameGrid)) {
+                activeBlock.position.x -= 1;
+            }
         }
+
+    }   
+
+    function invalidPosition(fourBlock: FourBlock, gameGrid: GameGrid): boolean {
+        let fourBlockPosition = {x: Math.round(fourBlock.position.x), y: Math.round(fourBlock.position.y)};
+        let unitBlockPosition;
+        for (let block of fourBlock.blocks) {
+            unitBlockPosition = {x: fourBlockPosition.x + block.position.x, y: fourBlockPosition.y + block.position.y}
+            if (unitBlockPosition.x < 0) {
+                return true;
+            }
+            if (unitBlockPosition.x > gameGrid.row[0].column.length - 1) {
+                return true;
+            }
+            if (gameGrid.row[unitBlockPosition.y].column[unitBlockPosition.x].occupied) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function reachedStop(fourBlock: FourBlock, gameGrid: GameGrid): boolean {
+        let fourBlockPosition = {x: Math.round(fourBlock.position.x), y: Math.round(fourBlock.position.y)};
+        let unitBlockPosition;
+        for (let block of fourBlock.blocks) {
+            unitBlockPosition = {x: fourBlockPosition.x + block.position.x, y: fourBlockPosition.y + block.position.y}
+            if (unitBlockPosition.y > gameGrid.row.length - 2) {
+                return true;
+            }
+            if (gameGrid.row[unitBlockPosition.y + 1].column[unitBlockPosition.x].occupied) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
     function update(progress) {
 
-        activeBlock.position.y += progress/500;
-
-        if (Math.abs(Math.round(activeBlock.position.y) - activeBlock.position.y) < 0.05) {
-            activeBlock.blocks.forEach(unitBlock => {
-
-            // console.log(activeBlock.position.y + unitBlock.position.y)
-            if (activeBlock.position.y + unitBlock.position.y < 18.25) {
-                if (gameGrid.row[Math.round(activeBlock.position.y + unitBlock.position.y + 1)].column[Math.round(activeBlock.position.x + unitBlock.position.x)].occupied) {
-                    
-                    if (activeBlock.position.y + unitBlock.position.y < 4) {
-                        console.log("dead")
-                    }
-                console.log("touch")
-
-                activeBlock.blocks.forEach(unitBlock => {
-                    gameGrid.row[Math.round(activeBlock.position.y +unitBlock.position.y)].column[Math.round(activeBlock.position.x + unitBlock.position.x)] = unitBlock;
-                });
-
-                console.log(gameGrid)
-
-                // blocks = [...blocks, activeBlock];
-                activeBlock = BlockFactory.GenerateRandomBlock();
-                activeBlock.position = {x: 3, y: 0};
-                                 
-                }
-            } else {
-                activeBlock.blocks.forEach(unitBlock => {
-                    gameGrid.row[Math.round(activeBlock.position.y +unitBlock.position.y)].column[Math.round(activeBlock.position.x + unitBlock.position.x)] = unitBlock;
-                });
-
-                console.log(gameGrid)
-
-                // blocks = [...blocks, activeBlock];
-                activeBlock = BlockFactory.GenerateRandomBlock();
-                activeBlock.position = {x: 3, y: 0};
-            }
-            // else if (activeBlock.position.y + unitBlock.position.y + 1 >= 20) {
-            //     console.log("bottom")
-
-            //     activeBlock.blocks.forEach(unitBlock => {
-            //         gameGrid.row[Math.round(activeBlock.position.y + unitBlock.position.y)].column[Math.round(activeBlock.position.x + unitBlock.position.x)] = unitBlock;
-            //     });
-
-            //     console.log(gameGrid)
-
-            //     blocks = [...blocks, activeBlock];
-            //     activeBlock = new ZBlock();
-            //     activeBlock.position = {x: 3, y: 0};
-            // }
-        });
+        if (!paused) {
+            activeBlock.position.y += progress/500;
         }
 
-        
-        // if ( activeBlock.reachFloor(areaHeight) ) {
-        //     blocks = [...blocks, activeBlock];
-        //     console.log(blocks);
-        //     activeBlock = new IBlock();
-        //     activeBlock.position = {x: 0, y: 0};
-        // }
+        if (Math.round(activeBlock.position.y) - activeBlock.position.y < 0.05) {
+            if (reachedStop(activeBlock, gameGrid)) {
+
+                activeBlock.blocks.forEach(unitBlock => {
+                    gameGrid.row[Math.round(activeBlock.position.y + unitBlock.position.y)].column[Math.round(activeBlock.position.x + unitBlock.position.x)] = unitBlock;
+                });
+
+                activeBlock = BlockFactory.GenerateRandomBlock();
+                activeBlock.position = {x: 2, y: 0};
+            }
+        }
     }
 
     function loop(timestamp) {
         var progress = timestamp - lastRender
-
+        
         update(progress)
         // draw()
 
@@ -147,14 +146,10 @@ import { BlockFactory } from "./types/BlockFactory";
     {#each gameGrid.row as row, i}
         {#each row.column as column, j}
             {#if column.occupied}
-                {console.log(column)}
-                <UnitBlock x={j * blockSize} y={i * blockSize} size="{blockSize}" block={column}/>
+                <UnitBlockComponent x={j * blockSize} y={i * blockSize} size="{blockSize}" block={column}/>
             {/if}
         {/each}
     {/each}
-    <!-- {#each blocks as block}
-        <Block block={block} size={blockSize}/>
-    {/each} -->
 </svg>
 
 

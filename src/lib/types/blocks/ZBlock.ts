@@ -1,6 +1,6 @@
-import { TetrisBlock } from "../TetrisBlock";
+import { FourBlock } from "../FourBlock";
 
-export class ZBlock extends TetrisBlock {
+export class ZBlock extends FourBlock {
     constructor() {
         super();
         this._possibleRotations = {
@@ -18,6 +18,6 @@ export class ZBlock extends TetrisBlock {
             ]
         }
         this._blocks = this._possibleRotations[0];
-        this._color = "#f55";
+        this._color = "red";
     }
 }
