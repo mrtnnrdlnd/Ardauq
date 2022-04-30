@@ -1,8 +1,6 @@
+<!-- <svelte:options immutable/> -->
 <script lang="ts">
-import { Coordinate } from "../types/Coordinate";
-
-import { UnitBlock } from "../types/GameGrid";
-
+import { UnitBlock } from "../types/GameComponents";
     export let block: UnitBlock;
     export let x: number;
     export let y: number;

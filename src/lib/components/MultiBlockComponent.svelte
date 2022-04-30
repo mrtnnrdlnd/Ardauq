@@ -1,8 +1,9 @@
 <script lang="ts">
-
-    import {FourBlock} from "../types/FourBlock";
+    
+    import { MultiBlock } from "../types/MultiBlock";
     import UnitBlockComponent from "./UnitBlockComponent.svelte";
-	export let block: FourBlock;
+    
+	export let block: MultiBlock;
     export let size: number;
     
 </script>
