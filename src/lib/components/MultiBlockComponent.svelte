@@ -1,8 +1,9 @@
 <script lang="ts">
-    
-    import { MultiBlock } from "../types/MultiBlock";
-    import UnitBlockComponent from "./UnitBlockComponent.svelte";
-    
+import { MultiBlock } from "../types/MultiBlock";
+import UnitBlockComponent from "./UnitBlockComponent.svelte";
+
+
+     
 	export let block: MultiBlock;
     export let size: number;
     

@@ -7,10 +7,13 @@
 </script>
 
 <main>
-	<div id="title">{name}</div>
-	<button on:click={() => paused = !paused}>
-		{paused ? "Unpause" : "Pause"} 
-	</button>
+	<div>
+		<div id="title">{name}</div>
+		<button on:click={() => paused = !paused}>
+			{paused ? "Unpause" : "Pause"} 
+		</button>
+	</div>
+	
 	<GameArea paused = {paused}/>
 </main>
 
