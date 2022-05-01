@@ -1,41 +1,25 @@
 
-// export interface GameGrid {
-//     rows:BlockRow[];
-// }
-
-export interface BlockRow {
-    columns:UnitBlock[];
+export interface IGameGrid {
+    slots: Array<Array<ISlot>>;
 }
 
-// export interface MultiBlock {
-//     position: Coordinate,
-//     currentOrientation?: number,
-//     blocks: {
-//         0:UnitBlock[],
-//         1?:UnitBlock[],
-//         2?:UnitBlock[],
-//         3?:UnitBlock[]
-//     }
-// }
-
-export interface Slot {
+export interface ISlot {
     occupied:boolean;
+    block?:IUnitBlock;
 }
 
-export interface UnitBlock {
-    index?:number;
-    position?:Coordinate;
-    occupied?:boolean;
-    color?:string;
-    connected?:{
-        up?:boolean,
-        right?:boolean,
-        down?:boolean,
-        left?:boolean
-    };
+export interface IMultiBlock {
+    position: ICoordinate,
+    blocks: IUnitBlock[]
 }
 
-export interface Coordinate {
+export interface IUnitBlock {
+    position:ICoordinate;
+    color:string;
+    connected:Direction[];
+}
+
+export interface ICoordinate {
     x: number;
     y: number;
 }

@@ -1,22 +1,24 @@
-import { SvelteComponent } from "../../../node_modules/svelte/types/runtime/index";
 import { BlockFactory } from "./BlockFactory";
-import { Coordinate, UnitBlock } from "./GameComponents";
-import { GameGrid } from "./GameGrid";
+import { Direction, ICoordinate, IMultiBlock, ISlot, IUnitBlock } from "./GameComponents";
 import { MultiBlock } from "./MultiBlock";
+
 
 export class GameHandler {
 
 
-    private _gameGrid: GameGrid;
+    private _gameGrid: Array<Array<ISlot>>;
     private _activeBlock: MultiBlock;
     public _multiBlocks: MultiBlock[] = [];
 
     constructor(width: number, height: number) {
-
-        this._gameGrid = new GameGrid(width, height);
+        this._gameGrid = Array.apply(null, Array(height)).map(() => {
+            return Array.apply(null, Array(width)).map(() => {
+                return {occupied: false}
+            })
+        });
     }
 
-    public get gameGrid(): GameGrid {
+    public get gameGrid() {
         return this._gameGrid;
     }
 
@@ -63,35 +65,47 @@ export class GameHandler {
         this._activeBlock.position.y += steps;
     }
 
+    public moveBlockY(multiBlock: MultiBlock, steps: number) {
+        multiBlock.position.y += steps;
+    }
+
     public dropBlock() {
         this.fallDown();
         let rows = this.removeFullRows();
-        if (rows.length > 0) {
-            this.reconstructAllMultiBlocksAbove(Math.max(...rows))
+        while (rows.length > 0) {
+            this.reconstructAllMultiBlocksAbove(this.gameGrid.length)
             this.applyGravity();
+            rows = this.removeFullRows();
         }
         this.newPiece();
         
     }
 
-    public fallDown() {
-        while (!this.hasReachedStop()) {
-            this.moveActiveBlockY(1);
+    public fallDown(multiBlock?: MultiBlock) {
+        if (multiBlock == undefined) {
+            multiBlock = this._activeBlock;
         }
-        console.log(this._activeBlock)
-        this.saveToGrid();
+
+        while (!this.hasReachedStop(multiBlock)) {
+            this.moveBlockY(multiBlock, 1);
+        }
+        this.saveToGrid(multiBlock);
     }
 
 
     private removeRow(rowNumber): void { 
-        for (let column = 0; column < this._gameGrid.width; column++) {
-            this._gameGrid.setBlock({x: column, y: rowNumber}, {occupied:false});
+        for (let column = 0; column < this._gameGrid[0].length; column++) {
+            this._gameGrid[rowNumber][column] =  {occupied:false};
 
-            if (this._gameGrid.getBlock({x: column, y: rowNumber - 1}).occupied) {
-                Object.assign(this._gameGrid.getBlock({x: column, y: rowNumber - 1}).connected, {down:false})
+            let slotAbove = this._gameGrid[rowNumber - 1][column];
+            if (slotAbove.occupied) {
+                slotAbove.block.connected = slotAbove.block.connected.filter(d => d != Direction.down);
             }
-            if (rowNumber < this._gameGrid.height - 1 && this._gameGrid.getBlock({x: column, y: rowNumber + 1}).occupied) {
-                Object.assign(this._gameGrid.getBlock({x: column, y: rowNumber + 1}).connected, {up:false});
+            if (rowNumber < this._gameGrid.length - 1) {
+                let slotBelow = this._gameGrid[rowNumber + 1][column];
+                if (slotBelow.occupied) {
+                    slotBelow.block.connected = slotBelow.block.connected.filter(d => d != Direction.up);
+                }
             }
         }
 
@@ -99,8 +113,8 @@ export class GameHandler {
     
     public removeFullRows(): number[] {
         let rowIndices: number[] = [];
-        for (let rowIndex = 0; rowIndex < this._gameGrid.height; rowIndex++) {
-            if (!this._gameGrid.getRow(rowIndex).map(c => c.occupied).includes(false)) {
+        for (let rowIndex = 0; rowIndex < this._gameGrid.length; rowIndex++) {
+            if (!this._gameGrid[rowIndex].map(slot => slot.occupied).includes(false)) {
                 this.removeRow(rowIndex);
                 rowIndices.push(rowIndex)
             }
@@ -108,14 +122,6 @@ export class GameHandler {
         }
         return rowIndices;
     }
-
-    // public registerMultiBlock(multiBlock: MultiBlock) {
-    //     this._multiBlocks.push(multiBlock);
-    //     multiBlock.blocks.forEach(unitBlock => {
-    //         this._gameGrid.setBlock({x: multiBlock.position.x + unitBlock.position.x, y: multiBlock.position.y + unitBlock.position.y}, unitBlock);
-    //     });
-    //     this._gameGrid = this._gameGrid;
-    // }
 
     public onInvalidPosition(multiBlock?: MultiBlock): boolean {
         if (multiBlock == undefined) {
@@ -128,10 +134,10 @@ export class GameHandler {
             if (unitBlockPosition.x < 0) {
                 return true;
             }
-            if (unitBlockPosition.x > this._gameGrid.width - 1) {
+            if (unitBlockPosition.x > this._gameGrid[0].length - 1) {
                 return true;
             }
-            if (this._gameGrid.getBlock({x: unitBlockPosition.x, y: unitBlockPosition.y}).occupied) {
+            if (this._gameGrid[unitBlockPosition.y][unitBlockPosition.x].occupied) {
                 return true;
             }
         }
@@ -147,16 +153,12 @@ export class GameHandler {
         let unitBlockPosition;
         for (let block of multiBlock.blocks) {
             unitBlockPosition = {x: multiBlockPosition.x + block.position.x, y: multiBlockPosition.y + block.position.y}
-            if (unitBlockPosition.y > this._gameGrid.height - 1) {
+            if (unitBlockPosition.y > this._gameGrid.length - 1) {
                 multiBlock.position.y--;
-                console.log(unitBlockPosition)
-                console.log(multiBlock)
                 return true;
             }
-            if (this._gameGrid.getBlock({x: unitBlockPosition.x, y: unitBlockPosition.y}).occupied) {
+            if (this._gameGrid[unitBlockPosition.y][unitBlockPosition.x].occupied) {
                 multiBlock.position.y--;
-                console.log(unitBlockPosition)
-                console.log(multiBlock)
                 return true;
             }
         }
@@ -167,14 +169,17 @@ export class GameHandler {
         if (multiBlock == undefined) {
             multiBlock = this._activeBlock;
         }
+        let row: number;
+        let column: number;
         multiBlock.blocks.forEach(unitBlock => {
-            unitBlock.occupied = true;
-
-            // console.log("multiblock.y:" + multiBlock.position.y)
-            // console.log("unitblock.y:" + unitBlock.position.y)
-            // console.log(this._gameGrid.blocks.length);
-            this._gameGrid.setBlock({x: multiBlock.position.x + unitBlock.position.x, y: multiBlock.position.y + unitBlock.position.y}, unitBlock);
-        })
+            row = multiBlock.position.y + unitBlock.position.y;
+            column = multiBlock.position.x + unitBlock.position.x;
+            unitBlock.position = {x:column, y:row};
+            this._gameGrid[row][column] = {
+                occupied: true,
+                block: unitBlock
+            }
+       })
     }
 
     public newPiece() {
@@ -183,43 +188,32 @@ export class GameHandler {
     }
 
     public applyGravity() {
-        
-        for (let index = 0; index < 4; index++) {
+        let stillFalling = true;
+        while (stillFalling) {
+            stillFalling = false;
             this._multiBlocks.forEach((multiBlock, i) => {
-
-
-
-                this._activeBlock = multiBlock;
-                this._activeBlock.blocks.forEach(block => {
-                    block.occupied = false;
-                });
-
-
-                this.fallDown(); 
-                
-
-                
+                multiBlock.blocks.forEach(block => {
+                    this._gameGrid[block.position.y][block.position.x].occupied = false;
+                })
+                this.fallDown(multiBlock); 
+                if (multiBlock.position.y > 0) {
+                    multiBlock.position.y = 0;
+                    stillFalling = true;   
+                }        
             });
-            console.log(this._multiBlocks)
         }
-
-        console.log(this._gameGrid.blocks);
-
-        // new Promise(resolve => setTimeout(resolve, 1000));
-        // }
-            
     }
 
     public reconstructAllMultiBlocksAbove(row: number) {
         this._multiBlocks = [];
 
-        let positions = this._gameGrid.blocks
-            .filter(block => block.occupied)
-            .map(block => block.position)
+        let positions = this._gameGrid.flat(1)
+            .filter(slot => slot.occupied)
+            .map(slot => slot.block.position)
             .filter(position => position.y < row);
 
 
-        let skip: Coordinate[] = [];
+        let skip: ICoordinate[] = [];
         for (const position of positions) {
             if (skip.includes(position)) {
                 continue;
@@ -230,42 +224,51 @@ export class GameHandler {
                 skip.push(b.position)
             })
         }
-        console.log(this._multiBlocks)
     }
 
-    public multiBlockAtPosition(position: Coordinate): MultiBlock {
+    public multiBlockAtPosition(position: ICoordinate): MultiBlock {
         let multiBlock = new MultiBlock();
         let unitBlock;
 
-        unitBlock = this._gameGrid.getBlock(position);
+        unitBlock = this._gameGrid[position.y][position.x].block;
         
         multiBlock.blocks = this.addAdjecentBlocks(unitBlock);
 
         return multiBlock;
     }
 
-    private addAdjecentBlocks(unitBlock: UnitBlock): UnitBlock[] {
+    private addAdjecentBlocks(unitBlock: IUnitBlock): IUnitBlock[] {
         let nrOfAddedBlocks: number = 1;
-        let addedBlocks: UnitBlock[];
-        let unitBlocks: UnitBlock[] = [unitBlock];
-        let addingUnitBlock: UnitBlock;
+        let addedBlocks: IUnitBlock[];
+        let unitBlocks: IUnitBlock[] = [unitBlock];
+        let adjecentSlot: ISlot;
         while (nrOfAddedBlocks > 0) {
             addedBlocks = unitBlocks.filter((_, i) => i >= unitBlocks.length - nrOfAddedBlocks);
             nrOfAddedBlocks = 0;
             addedBlocks.forEach(unitBlock => {
                 Object.entries(unitBlock.connected).forEach(direction => {
-                    if (direction[1]) {
-                        addingUnitBlock = this._gameGrid.getAdjecentBlock(unitBlock, direction[0]);
-                        if (addingUnitBlock.occupied && !unitBlocks.includes(addingUnitBlock)) {
-                            unitBlocks.push(addingUnitBlock);
-                            nrOfAddedBlocks++;
-                        }
+                    adjecentSlot = this.getAdjecentSlot(unitBlock.position, direction[1]);
+                    if (adjecentSlot.occupied && !unitBlocks.includes(adjecentSlot.block)) {
+                        unitBlocks.push(adjecentSlot.block);
+                        nrOfAddedBlocks++;
                     }
+            
                 });
             })
         }
 
         return unitBlocks;
+    }
+
+    private getAdjecentSlot(position:ICoordinate, direction: Direction) {
+        let adjecentPosition: ICoordinate = {x: position.x, y: position.y};
+        switch (direction) {
+            case Direction.up: adjecentPosition.y--; break;
+            case Direction.right: adjecentPosition.x++; break;
+            case Direction.down: adjecentPosition.y++; break;
+            case Direction.left: adjecentPosition.x--; break;
+        }
+        return this._gameGrid[adjecentPosition.y][adjecentPosition.x];
     }
 
 }

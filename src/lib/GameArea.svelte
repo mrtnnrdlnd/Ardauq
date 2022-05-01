@@ -1,9 +1,12 @@
 <script lang="ts">
-    import MultiBlockComponent from "./components/MultiBlockComponent.svelte";
-    import UnitBlockComponent from "./components/UnitBlockComponent.svelte";
+import MultiBlockComponent from "./components/MultiBlockComponent.svelte";
+import UnitBlockComponent from "./components/UnitBlockComponent.svelte";
+import { ISlot } from "./types/GameComponents";
 
-    import { GameHandler } from "./types/GameHandler";
+import { GameHandler } from "./types/GameHandler";
 import { MultiBlock } from "./types/MultiBlock";
+
+
 
 
 
@@ -13,8 +16,12 @@ import { MultiBlock } from "./types/MultiBlock";
 
     export let paused: boolean = true;
 
-    let gameHandler = new GameHandler(8, 20);
+    let gameHandler = new GameHandler(areaWidth, areaHeight);
     gameHandler.newPiece();
+
+    let outputGameGrid: Array<Array<ISlot>> = gameHandler.gameGrid;
+    let outputActiveBlock: MultiBlock = gameHandler.activeBlock;
+    
 
     // let gameGrid = new GameGrid2(8, 20);
 
@@ -55,21 +62,27 @@ import { MultiBlock } from "./types/MultiBlock";
             gameHandler.dropBlock();
         }
 
-        gameHandler = gameHandler;
+        outputActiveBlock = gameHandler.activeBlock;
 
     }
 
     function update(progress) {
-        gameHandler.moveActiveBlockY(+1);
+        gameHandler.moveActiveBlockY(1);
         if (gameHandler.hasReachedStop()) {
             gameHandler.dropBlock();
-        }   
-        gameHandler = gameHandler;
+        }
+        
+        // gameHandler = gameHandler;
     }
+
 
     let timer = 0;
     function loop(timestamp) {
         var progress = timestamp - lastRender
+
+        outputActiveBlock = gameHandler.activeBlock;
+        outputGameGrid = gameHandler.gameGrid;
+
         if (!paused) {
             timer += progress;
 
@@ -87,46 +100,27 @@ import { MultiBlock } from "./types/MultiBlock";
     }
     var lastRender = 0
     window.requestAnimationFrame(loop)
-    
-    let colorArr = [];
-
-    for (let index = 0; index < 50; index++) {
-        colorArr.push("rgb(" + Math.floor(Math.random() * 255)+ ", " + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ")")
-    }
-
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
 
 
 
+
 <svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    {#each gameHandler._multiBlocks as multiBlock, i}
-        {#each multiBlock.blocks as block}
-            <!-- {#if block.occupied} -->
-                <UnitBlockComponent x={block.position.x * blockSize} y={block.position.y * blockSize} size="{blockSize}" block={{color:colorArr[i], connected:{up:block.connected.up,right:block.connected.right,down:block.connected.down,left:block.connected.left}}}/>
-            <!-- {/if} -->
+    {#each outputActiveBlock.blocks as block}
+        <rect x={(outputActiveBlock.position.x + block.position.x) * blockSize} y={(outputActiveBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
+    {/each}
+    <MultiBlockComponent block={outputActiveBlock} size={blockSize}/>
+    {#each outputGameGrid as row, i}
+        {#each row as slot, i}  
+            {#if slot.occupied}
+                <UnitBlockComponent x={slot.block.position.x * blockSize} y={slot.block.position.y * blockSize} size="{blockSize}" block={slot.block}/>
+            {/if}
         {/each}
     {/each}
 </svg>
 
-<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
-    {#each gameHandler.gameGrid.blocks as block, i}
-            {#if block.occupied}
-                <UnitBlockComponent x={block.position.x * blockSize} y={block.position.y * blockSize} size="{blockSize}" block={block}/>
-            {/if}
-    {/each}
-</svg>
-
-<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    {#each gameHandler.gameGrid.blocks as block, i}
-            {#if block.occupied}
-                <!-- {block = gameHandler.gameGrid.getBlock(block.position)} -->
-                <UnitBlockComponent x={gameHandler.gameGrid.getBlock(block.position).position.x * blockSize} y={gameHandler.gameGrid.getBlock(block.position).position.y * blockSize} size="{blockSize}" block={{color:"gray", connected:{up:false,right:false,down:false,left:false}}}/>
-            {/if}
-    {/each}
-</svg>
 
 
 
