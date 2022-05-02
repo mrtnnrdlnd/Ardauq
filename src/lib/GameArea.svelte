@@ -6,6 +6,9 @@ import { ISlot } from "./types/GameComponents";
 import { GameHandler } from "./types/GameHandler";
 import { MultiBlock } from "./types/MultiBlock";
 
+import { fly } from 'svelte/transition';
+import { fix_position, get_slot_changes } from "svelte/internal";
+
 
 
 
@@ -34,7 +37,7 @@ import { MultiBlock } from "./types/MultiBlock";
 	let keyCode;
 
     
-    function handleKeydown(event) {
+    async function handleKeydown(event) {
 
         key = event.key;
         keyCode = event.keyCode;
@@ -59,7 +62,7 @@ import { MultiBlock } from "./types/MultiBlock";
 
         if (key === "o") {
             timer = 0;
-            gameHandler.dropBlock();
+            await gameHandler.dropBlock();
         }
 
         outputActiveBlock = gameHandler.activeBlock;
@@ -80,47 +83,63 @@ import { MultiBlock } from "./types/MultiBlock";
     function loop(timestamp) {
         var progress = timestamp - lastRender
 
-        outputActiveBlock = gameHandler.activeBlock;
-        outputGameGrid = gameHandler.gameGrid;
 
-        if (!paused) {
-            timer += progress;
+        if (!gameHandler.gameOver) {
 
-            if (timer > 500) {
-                update(progress)
-                timer = 0;
+            
+            gameHandler = gameHandler;
+
+            // outputActiveBlock = gameHandler.activeBlock;
+            // outputGameGrid = gameHandler.gameGrid;
+
+            if (!paused) {
+                timer += progress;
+
+                if (timer > 500) {
+                    update(progress)
+                    timer = 0;
+                }
             }
+
+
+            lastRender = timestamp
+            window.requestAnimationFrame(loop)
+        }
+        else {
+            console.log("game over")
         }
         
         // update(progress)
         // draw()
 
-        lastRender = timestamp
-        window.requestAnimationFrame(loop)
+        
     }
     var lastRender = 0
     window.requestAnimationFrame(loop)
+
+
+    let oldMultiBlocks = gameHandler.multiBlocks;
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
 
-
-
+<div style="font-size:xx-large">{gameHandler.score}</div>
 
 <svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    {#each outputActiveBlock.blocks as block}
-        <rect x={(outputActiveBlock.position.x + block.position.x) * blockSize} y={(outputActiveBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
+    {#each gameHandler.activeBlock.blocks as block}
+        <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
     {/each}
-    <MultiBlockComponent block={outputActiveBlock} size={blockSize}/>
-    {#each outputGameGrid as row, i}
-        {#each row as slot, i}  
-            {#if slot.occupied}
-                <UnitBlockComponent x={slot.block.position.x * blockSize} y={slot.block.position.y * blockSize} size="{blockSize}" block={slot.block}/>
-            {/if}
-        {/each}
+    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
+    {#each gameHandler.multiBlocks as multiBlock, i}
+        
+            {#each multiBlock.blocks as block, j}
+                {#if gameHandler.gameGrid[block.position.y][block.position.x].occupied}
+                    <UnitBlockComponent x={block.position.x * blockSize} y={block.position.y * blockSize} size="{blockSize}" block={block}/>
+                {/if}
+            {/each}
+        
     {/each}
 </svg>
-
 
 
 

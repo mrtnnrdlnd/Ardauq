@@ -1,5 +1,5 @@
 import { BlockFactory } from "./BlockFactory";
-import { Direction, ICoordinate, IMultiBlock, ISlot, IUnitBlock } from "./GameComponents";
+import { Direction, ICoordinate, ISlot, IUnitBlock } from "./GameComponents";
 import { MultiBlock } from "./MultiBlock";
 
 
@@ -8,7 +8,9 @@ export class GameHandler {
 
     private _gameGrid: Array<Array<ISlot>>;
     private _activeBlock: MultiBlock;
-    public _multiBlocks: MultiBlock[] = [];
+    public multiBlocks: MultiBlock[] = [];
+    public gameOver: boolean = false;
+    private _score: number = 0;
 
     constructor(width: number, height: number) {
         this._gameGrid = Array.apply(null, Array(height)).map(() => {
@@ -16,6 +18,10 @@ export class GameHandler {
                 return {occupied: false}
             })
         });
+    }
+
+    public get score() {
+        return this._score;
     }
 
     public get gameGrid() {
@@ -69,13 +75,17 @@ export class GameHandler {
         multiBlock.position.y += steps;
     }
 
-    public dropBlock() {
+    public async dropBlock() {
+        await new Promise(r => setTimeout(r, 10));
         this.fallDown();
         let rows = this.removeFullRows();
         while (rows.length > 0) {
+            this._score += Math.pow(rows.length, 2)
             this.reconstructAllMultiBlocksAbove(this.gameGrid.length)
-            this.applyGravity();
-            rows = this.removeFullRows();
+            await new Promise(r => setTimeout(r, 100)); 
+            this.applyGravity();    
+            await new Promise(r => setTimeout(r, 200));
+            rows = this.removeFullRows();     
         }
         this.newPiece();
         
@@ -89,7 +99,15 @@ export class GameHandler {
         while (!this.hasReachedStop(multiBlock)) {
             this.moveBlockY(multiBlock, 1);
         }
-        this.saveToGrid(multiBlock);
+        let multiBlockToSave = new MultiBlock();
+        multiBlockToSave.blocks = [];
+        multiBlock.blocks.forEach(block => {
+            block.position.x = block.position.x + multiBlock.position.x;
+            block.position.y = block.position.y + multiBlock.position.y;
+            multiBlockToSave.blocks.push(block);
+        })
+        this.multiBlocks.push(multiBlockToSave);
+        this.saveToGrid(multiBlockToSave);
     }
 
 
@@ -185,17 +203,23 @@ export class GameHandler {
     public newPiece() {
         this._activeBlock = BlockFactory.GenerateRandomBlock();
         this._activeBlock.position = {x: 2, y: 0};
+        this._activeBlock.blocks.forEach(block => {
+            if (this._gameGrid[this._activeBlock.position.y + block.position.y][this._activeBlock.position.x + block.position.x].occupied) {
+                this.gameOver = true;
+            }
+        })
     }
 
     public applyGravity() {
         let stillFalling = true;
         while (stillFalling) {
             stillFalling = false;
-            this._multiBlocks.forEach((multiBlock, i) => {
+            this.multiBlocks.forEach((multiBlock, i) => {
+                this._activeBlock = multiBlock;
                 multiBlock.blocks.forEach(block => {
                     this._gameGrid[block.position.y][block.position.x].occupied = false;
                 })
-                this.fallDown(multiBlock); 
+                this.fallDown(); 
                 if (multiBlock.position.y > 0) {
                     multiBlock.position.y = 0;
                     stillFalling = true;   
@@ -205,7 +229,7 @@ export class GameHandler {
     }
 
     public reconstructAllMultiBlocksAbove(row: number) {
-        this._multiBlocks = [];
+        this.multiBlocks = [];
 
         let positions = this._gameGrid.flat(1)
             .filter(slot => slot.occupied)
@@ -219,7 +243,7 @@ export class GameHandler {
                 continue;
             }
             let multiBlock = this.multiBlockAtPosition(position);
-            this._multiBlocks.push(multiBlock);
+            this.multiBlocks.push(multiBlock);
             multiBlock.blocks.forEach(b => {
                 skip.push(b.position)
             })
