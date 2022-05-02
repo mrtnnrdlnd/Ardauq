@@ -17,7 +17,9 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     let areaHeight: number = 20;
     let blockSize: number = 30;
 
-    export let paused: boolean = true;
+    export let paused: boolean
+    
+    
 
     let gameHandler = new GameHandler(areaWidth, areaHeight);
     gameHandler.newPiece();
@@ -25,7 +27,12 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     let outputGameGrid: Array<Array<ISlot>> = gameHandler.gameGrid;
     let outputActiveBlock: MultiBlock = gameHandler.activeBlock;
     
-
+    $: if (!paused) {
+        gameHandler.paused = paused;
+    }
+    $: if (paused) {
+        gameHandler.paused = paused;
+    }
     // let gameGrid = new GameGrid2(8, 20);
 
 
@@ -70,6 +77,7 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     }
 
     function update(progress) {
+
         gameHandler.moveActiveBlockY(1);
         if (gameHandler.hasReachedStop()) {
             gameHandler.dropBlock();
@@ -92,7 +100,7 @@ import { fix_position, get_slot_changes } from "svelte/internal";
             // outputActiveBlock = gameHandler.activeBlock;
             // outputGameGrid = gameHandler.gameGrid;
 
-            if (!paused) {
+            if (!gameHandler.paused) {
                 timer += progress;
 
                 if (timer > 500) {
@@ -118,7 +126,6 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     window.requestAnimationFrame(loop)
 
 
-    let oldMultiBlocks = gameHandler.multiBlocks;
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -135,6 +142,22 @@ import { fix_position, get_slot_changes } from "svelte/internal";
             {#each multiBlock.blocks as block, j}
                 {#if gameHandler.gameGrid[block.position.y][block.position.x].occupied}
                     <UnitBlockComponent x={block.position.x * blockSize} y={block.position.y * blockSize} size="{blockSize}" block={block}/>
+                {/if}
+            {/each}
+        
+    {/each}
+</svg>
+
+<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
+    {#each gameHandler.activeBlock.blocks as block}
+        <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
+    {/each}
+    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
+    {#each gameHandler.gameGrid as rows, i}
+        
+            {#each rows as slot, j}
+                {#if slot.occupied}
+                    <UnitBlockComponent x={slot.block.position.x * blockSize} y={slot.block.position.y * blockSize} size="{blockSize}" block={slot.block}/>
                 {/if}
             {/each}
         

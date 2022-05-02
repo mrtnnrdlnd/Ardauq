@@ -11,6 +11,7 @@ export class GameHandler {
     public multiBlocks: MultiBlock[] = [];
     public gameOver: boolean = false;
     private _score: number = 0;
+    public paused: boolean = true;
 
     constructor(width: number, height: number) {
         this._gameGrid = Array.apply(null, Array(height)).map(() => {
@@ -76,6 +77,7 @@ export class GameHandler {
     }
 
     public async dropBlock() {
+        this.paused = true;
         await new Promise(r => setTimeout(r, 10));
         this.fallDown();
         let rows = this.removeFullRows();
@@ -87,6 +89,7 @@ export class GameHandler {
             await new Promise(r => setTimeout(r, 200));
             rows = this.removeFullRows();     
         }
+        this.paused = false;
         this.newPiece();
         
     }
@@ -215,11 +218,11 @@ export class GameHandler {
         while (stillFalling) {
             stillFalling = false;
             this.multiBlocks.forEach((multiBlock, i) => {
-                this._activeBlock = multiBlock;
+                // this._activeBlock = multiBlock;
                 multiBlock.blocks.forEach(block => {
                     this._gameGrid[block.position.y][block.position.x].occupied = false;
                 })
-                this.fallDown(); 
+                this.fallDown(multiBlock); 
                 if (multiBlock.position.y > 0) {
                     multiBlock.position.y = 0;
                     stillFalling = true;   
