@@ -55,39 +55,50 @@ export class GameHandler {
     }
 
     public rotateActiveBlock(rotation: number) {
-        this.rotateBlock(rotation);
-        if (this.onInvalidPosition(this._activeBlock)) {
-            this.rotateBlock(-rotation);
+        if (!this.paused) {
+            this.rotateBlock(rotation);
+            if (this.onInvalidPosition(this._activeBlock)) {
+                this.rotateBlock(-rotation);
+            }
         }
     }
 
     public moveActiveBlockX(steps: number) {
-        this._activeBlock.position.x += steps;
-            if (this.onInvalidPosition(this._activeBlock)) {
-                this._activeBlock.position.x -= steps;
-            }
+        if (!this.paused) {
+            this._activeBlock.position.x += steps;
+                if (this.onInvalidPosition(this._activeBlock)) {
+                    this._activeBlock.position.x -= steps;
+                }
+        }
     }
 
     public moveActiveBlockY(steps: number) {
-        this._activeBlock.position.y += steps;
+        if (!this.paused) {
+            this._activeBlock.position.y += steps;
+        }
     }
 
     public moveBlockY(multiBlock: MultiBlock, steps: number) {
-        multiBlock.position.y += steps;
+            multiBlock.position.y += steps;
     }
 
     public async dropBlock() {
         this.paused = true;
-        await new Promise(r => setTimeout(r, 10));
         this.fallDown();
+        await new Promise(r => setTimeout(r, 10));
         let rows = this.removeFullRows();
-        while (rows.length > 0) {
-            this._score += Math.pow(rows.length, 2)
-            this.reconstructAllMultiBlocksAbove(this.gameGrid.length)
+        let accRows = rows.length;
+        while (rows.length > 0) {    
+            this.reconstructAllMultiBlocksAbove(this.gameGrid.length)    
             await new Promise(r => setTimeout(r, 100)); 
-            this.applyGravity();    
+            this.applyGravity();            
             await new Promise(r => setTimeout(r, 200));
             rows = this.removeFullRows();     
+            accRows += rows.length;    
+        }
+        if (accRows > 0) {
+            // console.log (accRows);
+            this._score += Math.pow(accRows, 2)
         }
         this.paused = false;
         this.newPiece();
@@ -172,6 +183,7 @@ export class GameHandler {
         
         let multiBlockPosition = {x: multiBlock.position.x, y: multiBlock.position.y};
         let unitBlockPosition;
+        
         for (let block of multiBlock.blocks) {
             unitBlockPosition = {x: multiBlockPosition.x + block.position.x, y: multiBlockPosition.y + block.position.y}
             if (unitBlockPosition.y > this._gameGrid.length - 1) {
@@ -218,7 +230,6 @@ export class GameHandler {
         while (stillFalling) {
             stillFalling = false;
             this.multiBlocks.forEach((multiBlock, i) => {
-                // this._activeBlock = multiBlock;
                 multiBlock.blocks.forEach(block => {
                     this._gameGrid[block.position.y][block.position.x].occupied = false;
                 })

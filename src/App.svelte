@@ -1,20 +1,14 @@
 <script lang="ts">
 
 	import GameArea from "./lib/GameArea.svelte";
-	export let name: string = "Ardauq";
-	let paused: boolean = true;
 
 </script>
 
 <main>
-	<div>
-		<div id="title">{name}</div>
-		<button on:click={() => paused = !paused}>
-			{paused ? "Unpause" : "Pause"} 
-		</button>
-	</div>
 	
-	<GameArea paused = {paused}/>
+	
+	<GameArea/>
+	
 </main>
 
 <style>

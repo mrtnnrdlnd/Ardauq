@@ -16,28 +16,13 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     let areaWidth: number = 8;
     let areaHeight: number = 20;
     let blockSize: number = 30;
-
-    export let paused: boolean
     
     
-
     let gameHandler = new GameHandler(areaWidth, areaHeight);
     gameHandler.newPiece();
 
     let outputGameGrid: Array<Array<ISlot>> = gameHandler.gameGrid;
     let outputActiveBlock: MultiBlock = gameHandler.activeBlock;
-    
-    $: if (!paused) {
-        gameHandler.paused = paused;
-    }
-    $: if (paused) {
-        gameHandler.paused = paused;
-    }
-    // let gameGrid = new GameGrid2(8, 20);
-
-
-    // let activeBlock: MultiBlockHandler2 = new MultiBlockHandler2(gameGridHandler.gameGrid)
-    // activeBlock.position = {x: 2, y: 0};
 
 
     let key;
@@ -130,6 +115,13 @@ import { fix_position, get_slot_changes } from "svelte/internal";
 
 <svelte:window on:keydown={handleKeydown}/>
 
+<div>
+    <div id="title">Ardauq</div>
+    <button on:click={() => gameHandler.paused = !gameHandler.paused}>
+        {gameHandler.paused ? "Unpause" : "Pause"} 
+    </button>
+</div>
+
 <div style="font-size:xx-large">{gameHandler.score}</div>
 
 <svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
@@ -138,16 +130,29 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     {/each}
     <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
     {#each gameHandler.multiBlocks as multiBlock, i}
-        
             {#each multiBlock.blocks as block, j}
-                {#if gameHandler.gameGrid[block.position.y][block.position.x].occupied}
-                    <UnitBlockComponent x={block.position.x * blockSize} y={block.position.y * blockSize} size="{blockSize}" block={block}/>
-                {/if}
+                <!-- {#if gameHandler.beforeFall} -->
+                    <!-- <g in:fly={gameHandler.beforeFall ? {y: (gameHandler.oldMultiBlocksYPosition[j] - gameHandler.multiBlocks[j].blocks[0].position.y) * blockSize, duration: 1000} : { y: 0}}> -->
+                        <!-- {#if gameHandler.gameGrid[block.position.y][block.position.x].occupied} -->
+                        
+                        <UnitBlockComponent 
+                            x={block.position.x * blockSize} 
+                            y={block.position.y * blockSize} 
+                            size="{blockSize}" block={block}/>
+                    
+                        <!-- {/if} -->
+                    <!-- </g> -->
+                <!-- {:else}
+                    <UnitBlockComponent 
+                        x={block.position.x * blockSize} 
+                        y={block.position.y * blockSize} 
+                        size="{blockSize}" block={block}/>
+                {/if} -->
             {/each}
         
     {/each}
 </svg>
-
+<!-- 
 <svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
     {#each gameHandler.activeBlock.blocks as block}
         <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
@@ -162,7 +167,7 @@ import { fix_position, get_slot_changes } from "svelte/internal";
             {/each}
         
     {/each}
-</svg>
+</svg> -->
 
 
 
@@ -174,4 +179,12 @@ import { fix_position, get_slot_changes } from "svelte/internal";
         height: var(--game-height);
 		margin: 5px auto;
 	}
+
+    #title {
+		color: green;
+		text-transform: uppercase;
+		font-size: 4em;
+		font-weight: 100;
+	}
+
 </style>
