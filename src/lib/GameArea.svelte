@@ -120,25 +120,25 @@ import { GameHandler } from "./types/GameHandler";
         box-sizing: border-box;
     }
 
-    .containing {
+    :global(.containing) {
         display: flex;
         max-width: 340px;
 		margin: 0 auto;
     }
 
-    .left {
+    :global(.left) {
         flex: 5%;
     }
-    .left > * {
+    :global(.left > *) {
         transform: rotate(-90deg);
         display:inline-block;
         margin-top:50px;
     }
-    .right {
+    :global(.right) {
         flex: 95%;
     }
 
-    .button {
+    :global(.button) {
         background-color: #7b38d8;
         border-radius: 10px;
         border: 4px double #cccccc;
@@ -149,7 +149,7 @@ import { GameHandler } from "./types/GameHandler";
         display:inline-block;
     }
 
-    .score {
+    :global(.score) {
         margin: 0 auto;
         font-size:xx-large
     }
