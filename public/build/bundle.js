@@ -1709,7 +1709,7 @@ var app = (function () {
     			attr_dev(rect, "height", rect_height_value = /*gameHandler*/ ctx[0].gameGrid.length * /*blockSize*/ ctx[3]);
     			attr_dev(rect, "fill", "#F3F3F3");
     			attr_dev(rect, "class", "svelte-10qn2sf");
-    			add_location(rect, file$1, 90, 16, 3319);
+    			add_location(rect, file$1, 90, 16, 3345);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, rect, anchor);
@@ -1992,22 +1992,23 @@ var app = (function () {
     			add_location(div1, file$1, 73, 0, 2523);
     			attr_dev(div2, "class", "button svelte-10qn2sf");
     			add_location(div2, file$1, 77, 8, 2727);
+    			set_style(div3, "margin-top", "250px");
     			attr_dev(div3, "class", "button svelte-10qn2sf");
     			add_location(div3, file$1, 80, 8, 2888);
     			attr_dev(div4, "class", "button svelte-10qn2sf");
-    			add_location(div4, file$1, 83, 8, 3006);
+    			add_location(div4, file$1, 83, 8, 3032);
     			attr_dev(div5, "class", "left svelte-10qn2sf");
     			add_location(div5, file$1, 76, 4, 2699);
     			set_style(svg, "--game-width", /*areaWidth*/ ctx[1] * /*blockSize*/ ctx[3] + "px");
     			set_style(svg, "--game-height", /*areaHeight*/ ctx[2] * /*blockSize*/ ctx[3] + "px");
     			attr_dev(svg, "class", "svelte-10qn2sf");
-    			add_location(svg, file$1, 88, 8, 3148);
+    			add_location(svg, file$1, 88, 8, 3174);
     			attr_dev(div6, "class", "button svelte-10qn2sf");
-    			add_location(div6, file$1, 102, 8, 4067);
+    			add_location(div6, file$1, 102, 8, 4093);
     			attr_dev(div7, "class", "button svelte-10qn2sf");
-    			add_location(div7, file$1, 105, 8, 4181);
+    			add_location(div7, file$1, 105, 8, 4207);
     			attr_dev(div8, "class", "right svelte-10qn2sf");
-    			add_location(div8, file$1, 87, 4, 3119);
+    			add_location(div8, file$1, 87, 4, 3145);
     			attr_dev(div9, "class", "containing svelte-10qn2sf");
     			set_style(div9, "--block-size", /*blockSize*/ ctx[3]);
     			set_style(div9, "--nr-of-columns", /*areaWidth*/ ctx[1]);

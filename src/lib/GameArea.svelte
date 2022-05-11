@@ -83,7 +83,7 @@ import { GameHandler } from "./types/GameHandler";
         <div class="button" on:click={() => gameHandler.paused = !gameHandler.paused}>
             {gameHandler.paused ? "Unpause" : "Pause"} 
         </div>
-        <div class="button" on:click={() => gameHandler.rotateActiveBlock(90)}>
+        <div style="margin-top: 250px" class="button" on:click={() => gameHandler.rotateActiveBlock(90)}>
             rotate 
         </div>
         <div class="button" on:click={() => gameHandler.dropBlock()}>
