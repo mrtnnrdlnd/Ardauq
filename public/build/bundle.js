@@ -1693,7 +1693,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (89:12) {#each gameHandler.activeBlock.blocks as block}
+    // (90:12) {#each gameHandler.activeBlock.blocks as block}
     function create_each_block_2(ctx) {
     	let rect;
     	let rect_x_value;
@@ -1708,8 +1708,8 @@ var app = (function () {
     			attr_dev(rect, "width", /*blockSize*/ ctx[3]);
     			attr_dev(rect, "height", rect_height_value = /*gameHandler*/ ctx[0].gameGrid.length * /*blockSize*/ ctx[3]);
     			attr_dev(rect, "fill", "#F3F3F3");
-    			attr_dev(rect, "class", "svelte-mh3bzb");
-    			add_location(rect, file$1, 89, 16, 3291);
+    			attr_dev(rect, "class", "svelte-xjy0l9");
+    			add_location(rect, file$1, 90, 16, 3319);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, rect, anchor);
@@ -1736,14 +1736,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(89:12) {#each gameHandler.activeBlock.blocks as block}",
+    		source: "(90:12) {#each gameHandler.activeBlock.blocks as block}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (94:16) {#each multiBlock.blocks as block, j}
+    // (95:16) {#each multiBlock.blocks as block, j}
     function create_each_block_1(ctx) {
     	let unitblockcomponent;
     	let current;
@@ -1791,14 +1791,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(94:16) {#each multiBlock.blocks as block, j}",
+    		source: "(95:16) {#each multiBlock.blocks as block, j}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (93:12) {#each gameHandler.multiBlocks as multiBlock, i}
+    // (94:12) {#each gameHandler.multiBlocks as multiBlock, i}
     function create_each_block(ctx) {
     	let each_1_anchor;
     	let current;
@@ -1887,7 +1887,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(93:12) {#each gameHandler.multiBlocks as multiBlock, i}",
+    		source: "(94:12) {#each gameHandler.multiBlocks as multiBlock, i}",
     		ctx
     	});
 
@@ -1895,28 +1895,29 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let div8;
-    	let div4;
+    	let div1;
     	let div0;
-    	let t0_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "";
+    	let t0_value = /*gameHandler*/ ctx[0].score + "";
     	let t0;
     	let t1;
-    	let div1;
-    	let t2_value = /*gameHandler*/ ctx[0].score + "";
+    	let div9;
+    	let div5;
+    	let div2;
+    	let t2_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "";
     	let t2;
     	let t3;
-    	let div2;
-    	let t5;
     	let div3;
+    	let t5;
+    	let div4;
     	let t7;
-    	let div7;
+    	let div8;
     	let svg;
     	let each0_anchor;
     	let multiblockcomponent;
     	let t8;
-    	let div5;
-    	let t10;
     	let div6;
+    	let t10;
+    	let div7;
     	let current;
     	let mounted;
     	let dispose;
@@ -1950,21 +1951,22 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div8 = element("div");
-    			div4 = element("div");
+    			div1 = element("div");
     			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = space();
-    			div1 = element("div");
+    			div9 = element("div");
+    			div5 = element("div");
+    			div2 = element("div");
     			t2 = text(t2_value);
     			t3 = space();
-    			div2 = element("div");
-    			div2.textContent = "rotate";
-    			t5 = space();
     			div3 = element("div");
-    			div3.textContent = "drop";
+    			div3.textContent = "rotate";
+    			t5 = space();
+    			div4 = element("div");
+    			div4.textContent = "drop";
     			t7 = space();
-    			div7 = element("div");
+    			div8 = element("div");
     			svg = svg_element("svg");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
@@ -1979,54 +1981,57 @@ var app = (function () {
     			}
 
     			t8 = space();
-    			div5 = element("div");
-    			div5.textContent = "left";
-    			t10 = space();
     			div6 = element("div");
-    			div6.textContent = "right";
-    			attr_dev(div0, "class", "button svelte-mh3bzb");
-    			add_location(div0, file$1, 75, 8, 2645);
-    			attr_dev(div1, "class", "score svelte-mh3bzb");
-    			add_location(div1, file$1, 78, 8, 2806);
-    			attr_dev(div2, "class", "button svelte-mh3bzb");
-    			add_location(div2, file$1, 79, 8, 2860);
-    			attr_dev(div3, "class", "button svelte-mh3bzb");
-    			add_location(div3, file$1, 82, 8, 2978);
-    			attr_dev(div4, "class", "left svelte-mh3bzb");
-    			add_location(div4, file$1, 74, 4, 2617);
+    			div6.textContent = "left";
+    			t10 = space();
+    			div7 = element("div");
+    			div7.textContent = "right";
+    			attr_dev(div0, "class", "score svelte-xjy0l9");
+    			add_location(div0, file$1, 73, 24, 2547);
+    			attr_dev(div1, "class", "containing svelte-xjy0l9");
+    			add_location(div1, file$1, 73, 0, 2523);
+    			attr_dev(div2, "class", "button svelte-xjy0l9");
+    			add_location(div2, file$1, 77, 8, 2727);
+    			attr_dev(div3, "class", "button svelte-xjy0l9");
+    			add_location(div3, file$1, 80, 8, 2888);
+    			attr_dev(div4, "class", "button svelte-xjy0l9");
+    			add_location(div4, file$1, 83, 8, 3006);
+    			attr_dev(div5, "class", "left svelte-xjy0l9");
+    			add_location(div5, file$1, 76, 4, 2699);
     			set_style(svg, "--game-width", /*areaWidth*/ ctx[1] * /*blockSize*/ ctx[3] + "px");
     			set_style(svg, "--game-height", /*areaHeight*/ ctx[2] * /*blockSize*/ ctx[3] + "px");
-    			attr_dev(svg, "class", "svelte-mh3bzb");
-    			add_location(svg, file$1, 87, 8, 3120);
-    			attr_dev(div5, "class", "button svelte-mh3bzb");
-    			add_location(div5, file$1, 101, 8, 4039);
-    			attr_dev(div6, "class", "button svelte-mh3bzb");
-    			add_location(div6, file$1, 104, 8, 4153);
-    			attr_dev(div7, "class", "right svelte-mh3bzb");
-    			add_location(div7, file$1, 86, 4, 3091);
-    			attr_dev(div8, "class", "containing svelte-mh3bzb");
-    			set_style(div8, "--block-size", /*blockSize*/ ctx[3]);
-    			set_style(div8, "--nr-of-columns", /*areaWidth*/ ctx[1]);
-    			add_location(div8, file$1, 73, 0, 2523);
+    			attr_dev(svg, "class", "svelte-xjy0l9");
+    			add_location(svg, file$1, 88, 8, 3148);
+    			attr_dev(div6, "class", "button svelte-xjy0l9");
+    			add_location(div6, file$1, 102, 8, 4067);
+    			attr_dev(div7, "class", "button svelte-xjy0l9");
+    			add_location(div7, file$1, 105, 8, 4181);
+    			attr_dev(div8, "class", "right svelte-xjy0l9");
+    			add_location(div8, file$1, 87, 4, 3119);
+    			attr_dev(div9, "class", "containing svelte-xjy0l9");
+    			set_style(div9, "--block-size", /*blockSize*/ ctx[3]);
+    			set_style(div9, "--nr-of-columns", /*areaWidth*/ ctx[1]);
+    			add_location(div9, file$1, 74, 0, 2599);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div8, anchor);
-    			append_dev(div8, div4);
-    			append_dev(div4, div0);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
     			append_dev(div0, t0);
-    			append_dev(div4, t1);
-    			append_dev(div4, div1);
-    			append_dev(div1, t2);
-    			append_dev(div4, t3);
-    			append_dev(div4, div2);
-    			append_dev(div4, t5);
-    			append_dev(div4, div3);
-    			append_dev(div8, t7);
-    			append_dev(div8, div7);
-    			append_dev(div7, svg);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, div9, anchor);
+    			append_dev(div9, div5);
+    			append_dev(div5, div2);
+    			append_dev(div2, t2);
+    			append_dev(div5, t3);
+    			append_dev(div5, div3);
+    			append_dev(div5, t5);
+    			append_dev(div5, div4);
+    			append_dev(div9, t7);
+    			append_dev(div9, div8);
+    			append_dev(div8, svg);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(svg, null);
@@ -2039,28 +2044,28 @@ var app = (function () {
     				each_blocks[i].m(svg, null);
     			}
 
-    			append_dev(div7, t8);
-    			append_dev(div7, div5);
-    			append_dev(div7, t10);
-    			append_dev(div7, div6);
+    			append_dev(div8, t8);
+    			append_dev(div8, div6);
+    			append_dev(div8, t10);
+    			append_dev(div8, div7);
     			current = true;
 
     			if (!mounted) {
     				dispose = [
     					listen_dev(window_1, "keydown", /*handleKeydown*/ ctx[4], false, false, false),
-    					listen_dev(div0, "click", /*click_handler*/ ctx[5], false, false, false),
-    					listen_dev(div2, "click", /*click_handler_1*/ ctx[6], false, false, false),
-    					listen_dev(div3, "click", /*click_handler_2*/ ctx[7], false, false, false),
-    					listen_dev(div5, "click", /*click_handler_3*/ ctx[8], false, false, false),
-    					listen_dev(div6, "click", /*click_handler_4*/ ctx[9], false, false, false)
+    					listen_dev(div2, "click", /*click_handler*/ ctx[5], false, false, false),
+    					listen_dev(div3, "click", /*click_handler_1*/ ctx[6], false, false, false),
+    					listen_dev(div4, "click", /*click_handler_2*/ ctx[7], false, false, false),
+    					listen_dev(div6, "click", /*click_handler_3*/ ctx[8], false, false, false),
+    					listen_dev(div7, "click", /*click_handler_4*/ ctx[9], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if ((!current || dirty & /*gameHandler*/ 1) && t0_value !== (t0_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "")) set_data_dev(t0, t0_value);
-    			if ((!current || dirty & /*gameHandler*/ 1) && t2_value !== (t2_value = /*gameHandler*/ ctx[0].score + "")) set_data_dev(t2, t2_value);
+    			if ((!current || dirty & /*gameHandler*/ 1) && t0_value !== (t0_value = /*gameHandler*/ ctx[0].score + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty & /*gameHandler*/ 1) && t2_value !== (t2_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "")) set_data_dev(t2, t2_value);
 
     			if (dirty & /*gameHandler, blockSize*/ 9) {
     				each_value_2 = /*gameHandler*/ ctx[0].activeBlock.blocks;
@@ -2139,7 +2144,9 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div8);
+    			if (detaching) detach_dev(div1);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(div9);
     			destroy_each(each_blocks_1, detaching);
     			destroy_component(multiblockcomponent);
     			destroy_each(each_blocks, detaching);

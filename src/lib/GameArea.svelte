@@ -76,12 +76,13 @@ import { GameHandler } from "./types/GameHandler";
 
 <svelte:window on:keydown={handleKeydown}/>
 
+<div class="containing"><div class="score">{gameHandler.score}</div></div>
 <div class="containing" style="--block-size: {blockSize}; --nr-of-columns: {areaWidth}">
+    
     <div class="left">
         <div class="button" on:click={() => gameHandler.paused = !gameHandler.paused}>
             {gameHandler.paused ? "Unpause" : "Pause"} 
         </div>
-        <div class="score">{gameHandler.score}</div>
         <div class="button" on:click={() => gameHandler.rotateActiveBlock(90)}>
             rotate 
         </div>
@@ -121,7 +122,7 @@ import { GameHandler } from "./types/GameHandler";
 
     .containing {
         display: flex;
-        max-width: 300px;
+        max-width: 340px;
 		margin: 0 auto;
     }
 
@@ -149,9 +150,7 @@ import { GameHandler } from "./types/GameHandler";
     }
 
     .score {
-        width: 100px;
-        margin-top:100px;
-        margin-bottom:50px;
+        margin: 0 auto;
         font-size:xx-large
     }
 
@@ -161,5 +160,4 @@ import { GameHandler } from "./types/GameHandler";
         height: var(--game-height);
 		margin: 5px auto;
 	}
-
 </style>
