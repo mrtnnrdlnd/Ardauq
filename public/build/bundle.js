@@ -1390,6 +1390,7 @@ var app = (function () {
                 case 5: return new TBlock();
                 case 6: return new JBlock();
             }
+            return {};
         }
     }
 
@@ -1674,50 +1675,56 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[15] = list[i];
-    	child_ctx[17] = i;
+    	child_ctx[16] = list[i];
+    	child_ctx[18] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[18] = list[i];
-    	child_ctx[20] = i;
+    	child_ctx[19] = list[i];
+    	child_ctx[21] = i;
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[18] = list[i];
+    	child_ctx[19] = list[i];
     	return child_ctx;
     }
 
-    // (98:4) {#each gameHandler.activeBlock.blocks as block}
+    // (89:12) {#each gameHandler.activeBlock.blocks as block}
     function create_each_block_2(ctx) {
     	let rect;
     	let rect_x_value;
     	let rect_y_value;
+    	let rect_height_value;
 
     	const block = {
     		c: function create() {
     			rect = svg_element("rect");
-    			attr_dev(rect, "x", rect_x_value = (/*gameHandler*/ ctx[0].activeBlock.position.x + /*block*/ ctx[18].position.x) * /*blockSize*/ ctx[3]);
-    			attr_dev(rect, "y", rect_y_value = (/*gameHandler*/ ctx[0].activeBlock.position.y + /*block*/ ctx[18].position.y) * /*blockSize*/ ctx[3]);
+    			attr_dev(rect, "x", rect_x_value = (/*gameHandler*/ ctx[0].activeBlock.position.x + /*block*/ ctx[19].position.x) * /*blockSize*/ ctx[3]);
+    			attr_dev(rect, "y", rect_y_value = (/*gameHandler*/ ctx[0].activeBlock.position.y + /*block*/ ctx[19].position.y) * /*blockSize*/ ctx[3]);
     			attr_dev(rect, "width", /*blockSize*/ ctx[3]);
-    			attr_dev(rect, "height", /*outputGameGrid*/ ctx[4].length * /*blockSize*/ ctx[3]);
+    			attr_dev(rect, "height", rect_height_value = /*gameHandler*/ ctx[0].gameGrid.length * /*blockSize*/ ctx[3]);
     			attr_dev(rect, "fill", "#F3F3F3");
-    			add_location(rect, file$1, 98, 8, 3404);
+    			attr_dev(rect, "class", "svelte-mh3bzb");
+    			add_location(rect, file$1, 89, 16, 3291);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, rect, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*gameHandler*/ 1 && rect_x_value !== (rect_x_value = (/*gameHandler*/ ctx[0].activeBlock.position.x + /*block*/ ctx[18].position.x) * /*blockSize*/ ctx[3])) {
+    			if (dirty & /*gameHandler*/ 1 && rect_x_value !== (rect_x_value = (/*gameHandler*/ ctx[0].activeBlock.position.x + /*block*/ ctx[19].position.x) * /*blockSize*/ ctx[3])) {
     				attr_dev(rect, "x", rect_x_value);
     			}
 
-    			if (dirty & /*gameHandler*/ 1 && rect_y_value !== (rect_y_value = (/*gameHandler*/ ctx[0].activeBlock.position.y + /*block*/ ctx[18].position.y) * /*blockSize*/ ctx[3])) {
+    			if (dirty & /*gameHandler*/ 1 && rect_y_value !== (rect_y_value = (/*gameHandler*/ ctx[0].activeBlock.position.y + /*block*/ ctx[19].position.y) * /*blockSize*/ ctx[3])) {
     				attr_dev(rect, "y", rect_y_value);
+    			}
+
+    			if (dirty & /*gameHandler*/ 1 && rect_height_value !== (rect_height_value = /*gameHandler*/ ctx[0].gameGrid.length * /*blockSize*/ ctx[3])) {
+    				attr_dev(rect, "height", rect_height_value);
     			}
     		},
     		d: function destroy(detaching) {
@@ -1729,24 +1736,24 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(98:4) {#each gameHandler.activeBlock.blocks as block}",
+    		source: "(89:12) {#each gameHandler.activeBlock.blocks as block}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (103:12) {#each multiBlock.blocks as block, j}
+    // (94:16) {#each multiBlock.blocks as block, j}
     function create_each_block_1(ctx) {
     	let unitblockcomponent;
     	let current;
 
     	unitblockcomponent = new UnitBlockComponent({
     			props: {
-    				x: /*block*/ ctx[18].position.x * /*blockSize*/ ctx[3],
-    				y: /*block*/ ctx[18].position.y * /*blockSize*/ ctx[3],
+    				x: /*block*/ ctx[19].position.x * /*blockSize*/ ctx[3],
+    				y: /*block*/ ctx[19].position.y * /*blockSize*/ ctx[3],
     				size: /*blockSize*/ ctx[3],
-    				block: /*block*/ ctx[18]
+    				block: /*block*/ ctx[19]
     			},
     			$$inline: true
     		});
@@ -1761,9 +1768,9 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const unitblockcomponent_changes = {};
-    			if (dirty & /*gameHandler*/ 1) unitblockcomponent_changes.x = /*block*/ ctx[18].position.x * /*blockSize*/ ctx[3];
-    			if (dirty & /*gameHandler*/ 1) unitblockcomponent_changes.y = /*block*/ ctx[18].position.y * /*blockSize*/ ctx[3];
-    			if (dirty & /*gameHandler*/ 1) unitblockcomponent_changes.block = /*block*/ ctx[18];
+    			if (dirty & /*gameHandler*/ 1) unitblockcomponent_changes.x = /*block*/ ctx[19].position.x * /*blockSize*/ ctx[3];
+    			if (dirty & /*gameHandler*/ 1) unitblockcomponent_changes.y = /*block*/ ctx[19].position.y * /*blockSize*/ ctx[3];
+    			if (dirty & /*gameHandler*/ 1) unitblockcomponent_changes.block = /*block*/ ctx[19];
     			unitblockcomponent.$set(unitblockcomponent_changes);
     		},
     		i: function intro(local) {
@@ -1784,18 +1791,18 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(103:12) {#each multiBlock.blocks as block, j}",
+    		source: "(94:16) {#each multiBlock.blocks as block, j}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (102:4) {#each gameHandler.multiBlocks as multiBlock, i}
+    // (93:12) {#each gameHandler.multiBlocks as multiBlock, i}
     function create_each_block(ctx) {
     	let each_1_anchor;
     	let current;
-    	let each_value_1 = /*multiBlock*/ ctx[15].blocks;
+    	let each_value_1 = /*multiBlock*/ ctx[16].blocks;
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -1825,7 +1832,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*gameHandler, blockSize*/ 9) {
-    				each_value_1 = /*multiBlock*/ ctx[15].blocks;
+    				each_value_1 = /*multiBlock*/ ctx[16].blocks;
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -1880,7 +1887,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(102:4) {#each gameHandler.multiBlocks as multiBlock, i}",
+    		source: "(93:12) {#each gameHandler.multiBlocks as multiBlock, i}",
     		ctx
     	});
 
@@ -1888,20 +1895,28 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let div1;
+    	let div8;
+    	let div4;
     	let div0;
+    	let t0_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "";
+    	let t0;
     	let t1;
-    	let button;
-    	let t2_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "";
+    	let div1;
+    	let t2_value = /*gameHandler*/ ctx[0].score + "";
     	let t2;
     	let t3;
     	let div2;
-    	let t4_value = /*gameHandler*/ ctx[0].score + "";
-    	let t4;
     	let t5;
+    	let div3;
+    	let t7;
+    	let div7;
     	let svg;
     	let each0_anchor;
     	let multiblockcomponent;
+    	let t8;
+    	let div5;
+    	let t10;
+    	let div6;
     	let current;
     	let mounted;
     	let dispose;
@@ -1935,16 +1950,21 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div1 = element("div");
+    			div8 = element("div");
+    			div4 = element("div");
     			div0 = element("div");
-    			div0.textContent = "Ardauq";
+    			t0 = text(t0_value);
     			t1 = space();
-    			button = element("button");
+    			div1 = element("div");
     			t2 = text(t2_value);
     			t3 = space();
     			div2 = element("div");
-    			t4 = text(t4_value);
+    			div2.textContent = "rotate";
     			t5 = space();
+    			div3 = element("div");
+    			div3.textContent = "drop";
+    			t7 = space();
+    			div7 = element("div");
     			svg = svg_element("svg");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
@@ -1958,32 +1978,55 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "id", "title");
-    			attr_dev(div0, "class", "svelte-1knet8y");
-    			add_location(div0, file$1, 88, 4, 3008);
-    			add_location(button, file$1, 89, 4, 3042);
-    			add_location(div1, file$1, 87, 0, 2997);
-    			set_style(div2, "font-size", "xx-large");
-    			add_location(div2, file$1, 94, 0, 3188);
+    			t8 = space();
+    			div5 = element("div");
+    			div5.textContent = "left";
+    			t10 = space();
+    			div6 = element("div");
+    			div6.textContent = "right";
+    			attr_dev(div0, "class", "button svelte-mh3bzb");
+    			add_location(div0, file$1, 75, 8, 2645);
+    			attr_dev(div1, "class", "score svelte-mh3bzb");
+    			add_location(div1, file$1, 78, 8, 2806);
+    			attr_dev(div2, "class", "button svelte-mh3bzb");
+    			add_location(div2, file$1, 79, 8, 2860);
+    			attr_dev(div3, "class", "button svelte-mh3bzb");
+    			add_location(div3, file$1, 82, 8, 2978);
+    			attr_dev(div4, "class", "left svelte-mh3bzb");
+    			add_location(div4, file$1, 74, 4, 2617);
     			set_style(svg, "--game-width", /*areaWidth*/ ctx[1] * /*blockSize*/ ctx[3] + "px");
     			set_style(svg, "--game-height", /*areaHeight*/ ctx[2] * /*blockSize*/ ctx[3] + "px");
-    			attr_dev(svg, "class", "svelte-1knet8y");
-    			add_location(svg, file$1, 96, 0, 3249);
+    			attr_dev(svg, "class", "svelte-mh3bzb");
+    			add_location(svg, file$1, 87, 8, 3120);
+    			attr_dev(div5, "class", "button svelte-mh3bzb");
+    			add_location(div5, file$1, 101, 8, 4039);
+    			attr_dev(div6, "class", "button svelte-mh3bzb");
+    			add_location(div6, file$1, 104, 8, 4153);
+    			attr_dev(div7, "class", "right svelte-mh3bzb");
+    			add_location(div7, file$1, 86, 4, 3091);
+    			attr_dev(div8, "class", "containing svelte-mh3bzb");
+    			set_style(div8, "--block-size", /*blockSize*/ ctx[3]);
+    			set_style(div8, "--nr-of-columns", /*areaWidth*/ ctx[1]);
+    			add_location(div8, file$1, 73, 0, 2523);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-    			append_dev(div1, div0);
-    			append_dev(div1, t1);
-    			append_dev(div1, button);
-    			append_dev(button, t2);
-    			insert_dev(target, t3, anchor);
-    			insert_dev(target, div2, anchor);
-    			append_dev(div2, t4);
-    			insert_dev(target, t5, anchor);
-    			insert_dev(target, svg, anchor);
+    			insert_dev(target, div8, anchor);
+    			append_dev(div8, div4);
+    			append_dev(div4, div0);
+    			append_dev(div0, t0);
+    			append_dev(div4, t1);
+    			append_dev(div4, div1);
+    			append_dev(div1, t2);
+    			append_dev(div4, t3);
+    			append_dev(div4, div2);
+    			append_dev(div4, t5);
+    			append_dev(div4, div3);
+    			append_dev(div8, t7);
+    			append_dev(div8, div7);
+    			append_dev(div7, svg);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(svg, null);
@@ -1996,22 +2039,30 @@ var app = (function () {
     				each_blocks[i].m(svg, null);
     			}
 
+    			append_dev(div7, t8);
+    			append_dev(div7, div5);
+    			append_dev(div7, t10);
+    			append_dev(div7, div6);
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(window_1, "keydown", /*handleKeydown*/ ctx[5], false, false, false),
-    					listen_dev(button, "click", /*click_handler*/ ctx[6], false, false, false)
+    					listen_dev(window_1, "keydown", /*handleKeydown*/ ctx[4], false, false, false),
+    					listen_dev(div0, "click", /*click_handler*/ ctx[5], false, false, false),
+    					listen_dev(div2, "click", /*click_handler_1*/ ctx[6], false, false, false),
+    					listen_dev(div3, "click", /*click_handler_2*/ ctx[7], false, false, false),
+    					listen_dev(div5, "click", /*click_handler_3*/ ctx[8], false, false, false),
+    					listen_dev(div6, "click", /*click_handler_4*/ ctx[9], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if ((!current || dirty & /*gameHandler*/ 1) && t2_value !== (t2_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "")) set_data_dev(t2, t2_value);
-    			if ((!current || dirty & /*gameHandler*/ 1) && t4_value !== (t4_value = /*gameHandler*/ ctx[0].score + "")) set_data_dev(t4, t4_value);
+    			if ((!current || dirty & /*gameHandler*/ 1) && t0_value !== (t0_value = (/*gameHandler*/ ctx[0].paused ? "Unpause" : "Pause") + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty & /*gameHandler*/ 1) && t2_value !== (t2_value = /*gameHandler*/ ctx[0].score + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty & /*gameHandler, blockSize, outputGameGrid*/ 25) {
+    			if (dirty & /*gameHandler, blockSize*/ 9) {
     				each_value_2 = /*gameHandler*/ ctx[0].activeBlock.blocks;
     				validate_each_argument(each_value_2);
     				let i;
@@ -2088,11 +2139,7 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
-    			if (detaching) detach_dev(t3);
-    			if (detaching) detach_dev(div2);
-    			if (detaching) detach_dev(t5);
-    			if (detaching) detach_dev(svg);
+    			if (detaching) detach_dev(div8);
     			destroy_each(each_blocks_1, detaching);
     			destroy_component(multiblockcomponent);
     			destroy_each(each_blocks, detaching);
@@ -2157,15 +2204,11 @@ var app = (function () {
     	let blockSize = 30;
     	let gameHandler = new GameHandler(areaWidth, areaHeight);
     	gameHandler.newPiece();
-    	let outputGameGrid = gameHandler.gameGrid;
-    	let outputActiveBlock = gameHandler.activeBlock;
     	let key;
-    	let keyCode;
 
     	function handleKeydown(event) {
     		return __awaiter(this, void 0, void 0, function* () {
     			key = event.key;
-    			keyCode = event.keyCode;
 
     			if (key === 'd') {
     				gameHandler.rotateActiveBlock(90);
@@ -2179,20 +2222,18 @@ var app = (function () {
     				gameHandler.rotateActiveBlock(-90);
     			}
 
-    			if (key === 'k') {
+    			if (key === 'ArrowLeft') {
     				gameHandler.moveActiveBlockX(-1);
     			}
 
-    			if (key === 'ö') {
+    			if (key === 'ArrowRight') {
     				gameHandler.moveActiveBlockX(+1);
     			}
 
-    			if (key === "o") {
+    			if (key === "ArrowDown") {
     				timer = 0;
     				yield gameHandler.dropBlock();
     			}
-
-    			outputActiveBlock = gameHandler.activeBlock;
     		});
     	}
 
@@ -2202,7 +2243,7 @@ var app = (function () {
     		if (gameHandler.hasReachedStop()) {
     			gameHandler.dropBlock();
     		}
-    	} // gameHandler = gameHandler;
+    	}
 
     	let timer = 0;
 
@@ -2212,8 +2253,6 @@ var app = (function () {
     		if (!gameHandler.gameOver) {
     			$$invalidate(0, gameHandler);
 
-    			// outputActiveBlock = gameHandler.activeBlock;
-    			// outputGameGrid = gameHandler.gameGrid;
     			if (!gameHandler.paused) {
     				timer += progress;
 
@@ -2228,8 +2267,7 @@ var app = (function () {
     		} else {
     			console.log("game over");
     		}
-    	} // update(progress)
-    	// draw()
+    	}
 
     	var lastRender = 0;
     	window.requestAnimationFrame(loop);
@@ -2240,6 +2278,10 @@ var app = (function () {
     	});
 
     	const click_handler = () => $$invalidate(0, gameHandler.paused = !gameHandler.paused, gameHandler);
+    	const click_handler_1 = () => gameHandler.rotateActiveBlock(90);
+    	const click_handler_2 = () => gameHandler.dropBlock();
+    	const click_handler_3 = () => gameHandler.moveActiveBlockX(-1);
+    	const click_handler_4 = () => gameHandler.moveActiveBlockX(1);
 
     	$$self.$capture_state = () => ({
     		__awaiter,
@@ -2250,10 +2292,7 @@ var app = (function () {
     		areaHeight,
     		blockSize,
     		gameHandler,
-    		outputGameGrid,
-    		outputActiveBlock,
     		key,
-    		keyCode,
     		handleKeydown,
     		update,
     		timer,
@@ -2267,10 +2306,7 @@ var app = (function () {
     		if ('areaHeight' in $$props) $$invalidate(2, areaHeight = $$props.areaHeight);
     		if ('blockSize' in $$props) $$invalidate(3, blockSize = $$props.blockSize);
     		if ('gameHandler' in $$props) $$invalidate(0, gameHandler = $$props.gameHandler);
-    		if ('outputGameGrid' in $$props) $$invalidate(4, outputGameGrid = $$props.outputGameGrid);
-    		if ('outputActiveBlock' in $$props) outputActiveBlock = $$props.outputActiveBlock;
     		if ('key' in $$props) key = $$props.key;
-    		if ('keyCode' in $$props) keyCode = $$props.keyCode;
     		if ('timer' in $$props) timer = $$props.timer;
     		if ('lastRender' in $$props) lastRender = $$props.lastRender;
     	};
@@ -2284,9 +2320,12 @@ var app = (function () {
     		areaWidth,
     		areaHeight,
     		blockSize,
-    		outputGameGrid,
     		handleKeydown,
-    		click_handler
+    		click_handler,
+    		click_handler_1,
+    		click_handler_2,
+    		click_handler_3,
+    		click_handler_4
     	];
     }
 

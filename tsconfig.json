@@ -1,6 +1,6 @@
 {
-  "strict": true,
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
     "target": "es6"
   },
   "include": ["src/**/*"],

@@ -1,38 +1,20 @@
 <script lang="ts">
 import MultiBlockComponent from "./components/MultiBlockComponent.svelte";
 import UnitBlockComponent from "./components/UnitBlockComponent.svelte";
-import { ISlot } from "./types/GameComponents";
 
 import { GameHandler } from "./types/GameHandler";
-import { MultiBlock } from "./types/MultiBlock";
-
-import { fly } from 'svelte/transition';
-import { fix_position, get_slot_changes } from "svelte/internal";
-
-
-
-
 
     let areaWidth: number = 8;
     let areaHeight: number = 20;
     let blockSize: number = 30;
-    
-    
+     
     let gameHandler = new GameHandler(areaWidth, areaHeight);
     gameHandler.newPiece();
 
-    let outputGameGrid: Array<Array<ISlot>> = gameHandler.gameGrid;
-    let outputActiveBlock: MultiBlock = gameHandler.activeBlock;
-
-
     let key;
-	let keyCode;
-
-    
     async function handleKeydown(event) {
 
         key = event.key;
-        keyCode = event.keyCode;
 
         if(key === 'd') {
             gameHandler.rotateActiveBlock(90);
@@ -43,32 +25,23 @@ import { fix_position, get_slot_changes } from "svelte/internal";
         if(key === 'a') {
             gameHandler.rotateActiveBlock(-90);
         }
-
-        if(key === 'k') {
+        if(key === 'ArrowLeft') {
             gameHandler.moveActiveBlockX(-1);
         }
-
-        if(key === 'ö') {
+        if(key === 'ArrowRight') {
             gameHandler.moveActiveBlockX(+1);
         }
-
-        if (key === "o") {
+        if (key === "ArrowDown") {
             timer = 0;
             await gameHandler.dropBlock();
         }
-
-        outputActiveBlock = gameHandler.activeBlock;
-
     }
 
     function update(progress) {
-
         gameHandler.moveActiveBlockY(1);
         if (gameHandler.hasReachedStop()) {
             gameHandler.dropBlock();
         }
-        
-        // gameHandler = gameHandler;
     }
 
 
@@ -76,15 +49,8 @@ import { fix_position, get_slot_changes } from "svelte/internal";
     function loop(timestamp) {
         var progress = timestamp - lastRender
 
-
-        if (!gameHandler.gameOver) {
-
-            
+        if (!gameHandler.gameOver) {        
             gameHandler = gameHandler;
-
-            // outputActiveBlock = gameHandler.activeBlock;
-            // outputGameGrid = gameHandler.gameGrid;
-
             if (!gameHandler.paused) {
                 timer += progress;
 
@@ -94,17 +60,12 @@ import { fix_position, get_slot_changes } from "svelte/internal";
                 }
             }
 
-
             lastRender = timestamp
             window.requestAnimationFrame(loop)
         }
         else {
             console.log("game over")
         }
-        
-        // update(progress)
-        // draw()
-
         
     }
     var lastRender = 0
@@ -115,76 +76,90 @@ import { fix_position, get_slot_changes } from "svelte/internal";
 
 <svelte:window on:keydown={handleKeydown}/>
 
-<div>
-    <div id="title">Ardauq</div>
-    <button on:click={() => gameHandler.paused = !gameHandler.paused}>
-        {gameHandler.paused ? "Unpause" : "Pause"} 
-    </button>
-</div>
-
-<div style="font-size:xx-large">{gameHandler.score}</div>
-
-<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    {#each gameHandler.activeBlock.blocks as block}
-        <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
-    {/each}
-    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
-    {#each gameHandler.multiBlocks as multiBlock, i}
-            {#each multiBlock.blocks as block, j}
-                <!-- {#if gameHandler.beforeFall} -->
-                    <!-- <g in:fly={gameHandler.beforeFall ? {y: (gameHandler.oldMultiBlocksYPosition[j] - gameHandler.multiBlocks[j].blocks[0].position.y) * blockSize, duration: 1000} : { y: 0}}> -->
-                        <!-- {#if gameHandler.gameGrid[block.position.y][block.position.x].occupied} -->
-                        
-                        <UnitBlockComponent 
-                            x={block.position.x * blockSize} 
-                            y={block.position.y * blockSize} 
-                            size="{blockSize}" block={block}/>
-                    
-                        <!-- {/if} -->
-                    <!-- </g> -->
-                <!-- {:else}
+<div class="containing" style="--block-size: {blockSize}; --nr-of-columns: {areaWidth}">
+    <div class="left">
+        <div class="button" on:click={() => gameHandler.paused = !gameHandler.paused}>
+            {gameHandler.paused ? "Unpause" : "Pause"} 
+        </div>
+        <div class="score">{gameHandler.score}</div>
+        <div class="button" on:click={() => gameHandler.rotateActiveBlock(90)}>
+            rotate 
+        </div>
+        <div class="button" on:click={() => gameHandler.dropBlock()}>
+            drop
+        </div>
+    </div>
+    <div class="right">
+        <svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
+            {#each gameHandler.activeBlock.blocks as block}
+                <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={gameHandler.gameGrid.length * blockSize} fill="#F3F3F3"/>
+            {/each}
+            <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
+            {#each gameHandler.multiBlocks as multiBlock, i}
+                {#each multiBlock.blocks as block, j}
                     <UnitBlockComponent 
                         x={block.position.x * blockSize} 
                         y={block.position.y * blockSize} 
                         size="{blockSize}" block={block}/>
-                {/if} -->
+                {/each}
             {/each}
-        
-    {/each}
-</svg>
-<!-- 
-<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    {#each gameHandler.activeBlock.blocks as block}
-        <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={outputGameGrid.length * blockSize} fill="#F3F3F3"/>
-    {/each}
-    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
-    {#each gameHandler.gameGrid as rows, i}
-        
-            {#each rows as slot, j}
-                {#if slot.occupied}
-                    <UnitBlockComponent x={slot.block.position.x * blockSize} y={slot.block.position.y * blockSize} size="{blockSize}" block={slot.block}/>
-                {/if}
-            {/each}
-        
-    {/each}
-</svg> -->
-
-
+        </svg>
+        <div class="button" on:click={() => gameHandler.moveActiveBlockX(-1)}>
+            left
+        </div>
+        <div class="button" on:click={() => gameHandler.moveActiveBlockX(1)}>
+            right
+        </div>
+    </div>
+</div>
 
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .containing {
+        display: flex;
+        max-width: 300px;
+		margin: 0 auto;
+    }
+
+    .left {
+        flex: 5%;
+    }
+    .left > * {
+        transform: rotate(-90deg);
+        display:inline-block;
+        margin-top:50px;
+    }
+    .right {
+        flex: 95%;
+    }
+
+    .button {
+        background-color: #7b38d8;
+        border-radius: 10px;
+        border: 4px double #cccccc;
+        color: #eeeeee;
+        text-align: center;
+        padding: 15px;
+        width: 100px;
+        display:inline-block;
+    }
+
+    .score {
+        width: 100px;
+        margin-top:100px;
+        margin-bottom:50px;
+        font-size:xx-large
+    }
+
 	svg {
 		border: 1px solid #bbb;
 		width: var(--game-width);
         height: var(--game-height);
 		margin: 5px auto;
-	}
-
-    #title {
-		color: green;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
 	}
 
 </style>

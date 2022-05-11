@@ -23,5 +23,7 @@ export class BlockFactory {
             case 6: return new JBlock();
         }
 
+        return {} as MultiBlock;
+
     }
 }
