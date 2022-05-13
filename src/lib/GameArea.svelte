@@ -91,20 +91,15 @@ import { GameHandler } from "./types/GameHandler";
         </div>
     </div>
     <div class="right">
-        <svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-            {#each gameHandler.activeBlock.blocks as block}
-                <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={gameHandler.gameGrid.length * blockSize} fill="#F3F3F3"/>
-            {/each}
-            <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
-            {#each gameHandler.multiBlocks as multiBlock, i}
-                {#each multiBlock.blocks as block, j}
-                    <UnitBlockComponent 
-                        x={block.position.x * blockSize} 
-                        y={block.position.y * blockSize} 
-                        size="{blockSize}" block={block}/>
-                {/each}
-            {/each}
-        </svg>
+<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
+    {#each gameHandler.activeBlock.blocks as block}
+        <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={gameHandler.gameGrid.length * blockSize} fill="#F3F3F3"/>
+    {/each}
+    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
+    {#each gameHandler.multiBlocks as multiBlock}
+        <MultiBlockComponent block={multiBlock} size="{blockSize}" />
+    {/each}
+</svg>
         <div class="button" on:click={() => gameHandler.moveActiveBlockX(-1)}>
             left
         </div>

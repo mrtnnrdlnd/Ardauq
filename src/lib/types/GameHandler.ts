@@ -8,10 +8,10 @@ export class GameHandler {
 
     private _gameGrid: Array<Array<ISlot>>;
     private _activeBlock: MultiBlock;
-    public multiBlocks: MultiBlock[] = [];
-    public gameOver: boolean = false;
+    private _multiBlocks: MultiBlock[] = [];
+    private _gameOver: boolean = false;
     private _score: number = 0;
-    public paused: boolean = true;
+    private _paused: boolean = true;
 
     constructor(width: number, height: number) {
         this._gameGrid = Array.apply(null, Array(height)).map(() => {
@@ -20,6 +20,21 @@ export class GameHandler {
             })
         });
     }
+
+    
+    public get paused() : boolean {
+        return this._paused;
+    }
+
+    public set paused(paused : boolean) {
+        this._paused = paused;
+    }
+
+    public get gameOver(): boolean {
+        return this._gameOver;
+    }
+    
+    
 
     public get score() {
         return this._score;
@@ -33,8 +48,8 @@ export class GameHandler {
         return this._activeBlock;
     }
 
-    public set activeBlock(activeBlock: MultiBlock) {
-        this._activeBlock = activeBlock;
+    public get multiBlocks() {
+        return this._multiBlocks;
     }
 
     private rotateBlock(rotation: number) {
@@ -55,7 +70,7 @@ export class GameHandler {
     }
 
     public rotateActiveBlock(rotation: number) {
-        if (!this.paused) {
+        if (!this._paused) {
             this.rotateBlock(rotation);
             if (this.onInvalidPosition(this._activeBlock)) {
                 this.rotateBlock(-rotation);
@@ -64,7 +79,7 @@ export class GameHandler {
     }
 
     public moveActiveBlockX(steps: number) {
-        if (!this.paused) {
+        if (!this._paused) {
             this._activeBlock.position.x += steps;
                 if (this.onInvalidPosition(this._activeBlock)) {
                     this._activeBlock.position.x -= steps;
@@ -73,17 +88,17 @@ export class GameHandler {
     }
 
     public moveActiveBlockY(steps: number) {
-        if (!this.paused) {
+        if (!this._paused) {
             this._activeBlock.position.y += steps;
         }
     }
 
-    public moveBlockY(multiBlock: MultiBlock, steps: number) {
+    private moveBlockY(multiBlock: MultiBlock, steps: number) {
             multiBlock.position.y += steps;
     }
 
     public async dropBlock() {
-        this.paused = true;
+        this._paused = true;
         this.fallDown();
         await new Promise(r => setTimeout(r, 10));
         let rows = this.removeFullRows();
@@ -100,12 +115,12 @@ export class GameHandler {
             // console.log (accRows);
             this._score += Math.pow(accRows, 2)
         }
-        this.paused = false;
+        this._paused = false;
         this.newPiece();
         
     }
 
-    public fallDown(multiBlock?: MultiBlock) {
+    private fallDown(multiBlock?: MultiBlock) {
         if (multiBlock == undefined) {
             multiBlock = this._activeBlock;
         }
@@ -120,7 +135,7 @@ export class GameHandler {
             block.position.y = block.position.y + multiBlock.position.y;
             multiBlockToSave.blocks.push(block);
         })
-        this.multiBlocks.push(multiBlockToSave);
+        this._multiBlocks.push(multiBlockToSave);
         this.saveToGrid(multiBlockToSave);
     }
 
@@ -155,7 +170,7 @@ export class GameHandler {
         return rowIndices;
     }
 
-    public onInvalidPosition(multiBlock?: MultiBlock): boolean {
+    private onInvalidPosition(multiBlock?: MultiBlock): boolean {
         if (multiBlock == undefined) {
             multiBlock = this._activeBlock;
         }
@@ -198,7 +213,7 @@ export class GameHandler {
         return false;
     }
 
-    public saveToGrid(multiBlock?: MultiBlock) {
+    private saveToGrid(multiBlock?: MultiBlock) {
         if (multiBlock == undefined) {
             multiBlock = this._activeBlock;
         }
@@ -220,16 +235,16 @@ export class GameHandler {
         this._activeBlock.position = {x: 2, y: 0};
         this._activeBlock.blocks.forEach(block => {
             if (this._gameGrid[this._activeBlock.position.y + block.position.y][this._activeBlock.position.x + block.position.x].occupied) {
-                this.gameOver = true;
+                this._gameOver = true;
             }
         })
     }
 
-    public applyGravity() {
+    private applyGravity() {
         let stillFalling = true;
         while (stillFalling) {
             stillFalling = false;
-            this.multiBlocks.forEach((multiBlock, i) => {
+            this._multiBlocks.forEach((multiBlock, i) => {
                 multiBlock.blocks.forEach(block => {
                     this._gameGrid[block.position.y][block.position.x].occupied = false;
                 })
@@ -242,8 +257,8 @@ export class GameHandler {
         }
     }
 
-    public reconstructAllMultiBlocksAbove(row: number) {
-        this.multiBlocks = [];
+    private reconstructAllMultiBlocksAbove(row: number) {
+        this._multiBlocks = [];
 
         let positions = this._gameGrid.flat(1)
             .filter(slot => slot.occupied)
@@ -257,14 +272,14 @@ export class GameHandler {
                 continue;
             }
             let multiBlock = this.multiBlockAtPosition(position);
-            this.multiBlocks.push(multiBlock);
+            this._multiBlocks.push(multiBlock);
             multiBlock.blocks.forEach(b => {
                 skip.push(b.position)
             })
         }
     }
 
-    public multiBlockAtPosition(position: ICoordinate): MultiBlock {
+    private multiBlockAtPosition(position: ICoordinate): MultiBlock {
         let multiBlock = new MultiBlock();
         let unitBlock;
 
