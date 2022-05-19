@@ -20,7 +20,7 @@ export class ZBlock extends MultiBlock {
                 {x:1, y:2}
             ]
         ]
-        let color = "red";
+        let color = "#ff69b4";
 
         this.init(blockOrientation, color);
     }

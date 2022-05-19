@@ -1212,7 +1212,7 @@ var app = (function () {
                     { x: 1, y: 3 }
                 ]
             ];
-            let color = "green";
+            let color = "#a4c639";
             this.init(blockOrientation, color);
         }
     }
@@ -1246,7 +1246,7 @@ var app = (function () {
                     { x: 1, y: 2 }
                 ]
             ];
-            let color = "purple";
+            let color = "#9966cc";
             this.init(blockOrientation, color);
         }
     }
@@ -1262,7 +1262,7 @@ var app = (function () {
                     { x: 2, y: 2 }
                 ]
             ];
-            let color = "orange";
+            let color = "#ffbf00";
             this.init(blockOrientation, color);
         }
     }
@@ -1284,7 +1284,7 @@ var app = (function () {
                     { x: 1, y: 0 }
                 ]
             ];
-            let color = "pink";
+            let color = "#e32636";
             this.init(blockOrientation, color);
         }
     }
@@ -1306,7 +1306,7 @@ var app = (function () {
                     { x: 1, y: 2 }
                 ]
             ];
-            let color = "red";
+            let color = "#ff69b4";
             this.init(blockOrientation, color);
         }
     }
@@ -1340,7 +1340,7 @@ var app = (function () {
                     { x: 2, y: 1 }
                 ]
             ];
-            let color = "brown";
+            let color = "#5d8aa8";
             this.init(blockOrientation, color);
         }
     }
@@ -1374,7 +1374,7 @@ var app = (function () {
                     { x: 2, y: 0 }
                 ]
             ];
-            let color = "blue";
+            let color = "#cd9575";
             this.init(blockOrientation, color);
         }
     }

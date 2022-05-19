@@ -13,7 +13,7 @@ export class OBlock extends MultiBlock {
                 {x:2, y:2}      
             ]
         ];
-        let color = "orange";
+        let color = "#ffbf00";
 
         this.init(blockOrientation, color)
     }

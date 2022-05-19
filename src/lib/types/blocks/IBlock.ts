@@ -19,7 +19,7 @@ export class IBlock extends MultiBlock {
                 {x:1, y:3}
             ]
         ];
-        let color = "green";
+        let color = "#a4c639";
 
         this.init(blockOrientation, color)
     }

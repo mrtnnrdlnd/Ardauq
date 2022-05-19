@@ -19,7 +19,7 @@ export class SBlock extends MultiBlock {
                 {x:1, y:0}
             ]
         ]
-        let color = "pink";
+        let color = "#e32636";
 
         this.init(blockOrientation, color);
     }

@@ -32,7 +32,7 @@ export class LBlock extends MultiBlock {
             ]
         ]
 
-        let color = "purple";
+        let color = "#9966cc";
 
         this.init(blockOrientation, color);
     }

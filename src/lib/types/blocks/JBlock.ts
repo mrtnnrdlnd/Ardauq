@@ -32,7 +32,7 @@ export class JBlock extends MultiBlock {
             ]
         ]
 
-        let color = "blue";
+        let color = "#cd9575";
 
         this.init(blockOrientation, color);
     }

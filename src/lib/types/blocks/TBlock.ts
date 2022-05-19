@@ -32,7 +32,7 @@ export class TBlock extends MultiBlock {
             ]
         ]
 
-        let color = "brown";
+        let color = "#5d8aa8";
 
         this.init(blockOrientation, color);
     }
