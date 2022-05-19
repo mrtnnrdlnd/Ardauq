@@ -1229,9 +1229,9 @@ var app = (function () {
                 let accRows = rows.length;
                 while (rows.length > 0) {
                     this.reconstructAllMultiBlocksAbove(this.gameGrid.length);
-                    yield new Promise(r => setTimeout(r, 100));
+                    yield new Promise(r => setTimeout(r, 150));
                     this.applyGravity();
-                    yield new Promise(r => setTimeout(r, 200));
+                    yield new Promise(r => setTimeout(r, 300));
                     rows = this.removeFullRows();
                     accRows += rows.length;
                 }

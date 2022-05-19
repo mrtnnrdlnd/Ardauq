@@ -105,9 +105,9 @@ export class GameHandler {
         let accRows = rows.length;
         while (rows.length > 0) {    
             this.reconstructAllMultiBlocksAbove(this.gameGrid.length)    
-            await new Promise(r => setTimeout(r, 100)); 
+            await new Promise(r => setTimeout(r, 150)); 
             this.applyGravity();            
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 300));
             rows = this.removeFullRows();     
             accRows += rows.length;    
         }
