@@ -91,15 +91,17 @@ import { GameHandler } from "./types/GameHandler";
         </div>
     </div>
     <div class="right">
-<svg style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    {#each gameHandler.activeBlock.blocks as block}
+<div id="gameArea" style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
+    <!-- {#each gameHandler.activeBlock.blocks as block}
         <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={gameHandler.gameGrid.length * blockSize} fill="#F3F3F3"/>
-    {/each}
+    {/each} -->
+    {#if !gameHandler.paused}
     <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
+    {/if}
     {#each gameHandler.multiBlocks as multiBlock}
         <MultiBlockComponent block={multiBlock} size="{blockSize}" />
     {/each}
-</svg>
+</div>
         <div class="button" on:click={() => gameHandler.moveActiveBlockX(-1)}>
             left
         </div>
@@ -149,10 +151,12 @@ import { GameHandler } from "./types/GameHandler";
         font-size:xx-large
     }
 
-	svg {
+	#gameArea {
+        box-sizing:content-box;
 		border: 1px solid #bbb;
 		width: var(--game-width);
         height: var(--game-height);
 		margin: 5px auto;
+        padding:0px;
 	}
 </style>

@@ -6,27 +6,51 @@ import { Direction, IUnitBlock } from "../types/GameComponents";
     export let y: number;
     export let size: number;
 
+    let subPieceClass: string;
+    $: {
+        subPieceClass = ""
+        block.connected.forEach((direction) => {
+           subPieceClass += " " + (Direction[direction]);
+        })
+    }
 </script>
 
-<g transform="translate({x} {y})">
-    <rect width={size} height={size} fill={block.color} />
-    {#if !block.connected.includes(Direction.up)}
-        <line x1="0" y1="1" x2={size} y2="1" />
-    {/if}
-    {#if !block.connected.includes(Direction.right)}
-        <line x1={size - 1} y1="0" x2={size - 1} y2={size} />
-    {/if}
-    {#if !block.connected.includes(Direction.down)}
-        <line x1={size} y1={size - 1} x2="0" y2={size - 1} />
-    {/if}
-    {#if !block.connected.includes(Direction.left)}
-        <line x1="1" y1={size} x2="1" y2="0" />
-    {/if}    
-</g>
+<div class="unitBlock {subPieceClass}" style="width:{size}px; height:{size}px; background-color:{block.color}; transform:translate({x}px, {y}px)" ></div>
 
 <style>
-    line {
-        stroke:white;
-        stroke-width:1
+    .unitBlock {
+        position:absolute;
+        box-sizing: border-box;
+        border-width:0px;
+        border-style:double;
+        border-color:black;
+    }
+    :not(.up) {
+        border-top-width: 1px;
+    }
+    :not(.down) {
+        border-bottom-width: 1px;
+    }
+    :not(.left) {
+        border-left-width: 1px;
+    }
+    :not(.right) {
+        border-right-width: 1px;
+    }
+    :not(.down, .left) {
+        border-bottom-left-radius: 3px;
+
+    }
+    :not(.down, .right) {
+        border-bottom-right-radius: 3px;
+
+    }
+    :not(.up, .right) {
+        border-top-right-radius: 3px;
+
+    }
+    :not(.up, .left) {
+        border-top-left-radius: 3px;
+
     }
 </style>
