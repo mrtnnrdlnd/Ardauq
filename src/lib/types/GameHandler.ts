@@ -103,8 +103,9 @@ export class GameHandler {
         await new Promise(r => setTimeout(r, 10));
         let rows = this.removeFullRows();
         let accRows = rows.length;
-        while (rows.length > 0) {    
-            this.reconstructAllMultiBlocksAbove(this.gameGrid.length)    
+        while (rows.length > 0) {
+            this._multiBlocks = [];
+            this._multiBlocks = this.reconstructAllMultiBlocksAbove(this.gameGrid.length);  
             await new Promise(r => setTimeout(r, 150)); 
             this.applyGravity();            
             await new Promise(r => setTimeout(r, 300));
@@ -119,6 +120,22 @@ export class GameHandler {
         this.newPiece();
         
     }
+
+    private static copy(obj) {
+		let copiedObject = {};
+		Object.keys( obj ).forEach( function( key ) {
+			if ( typeof obj[ key ] === 'object' ) {
+				copiedObject[key] = GameHandler.copy( obj[ key ] );
+			}
+			else {
+				copiedObject[key] = obj[key];
+			}
+		} );
+		return copiedObject;
+        // return JSON.parse(JSON.stringify(obj));
+	}
+
+    
 
     private fallDown(multiBlock?: MultiBlock) {
         if (multiBlock == undefined) {
@@ -257,8 +274,10 @@ export class GameHandler {
         }
     }
 
-    private reconstructAllMultiBlocksAbove(row: number) {
-        this._multiBlocks = [];
+
+
+    private reconstructAllMultiBlocksAbove(row: number): MultiBlock[] {
+        let multiBlocks: MultiBlock[] = [];
 
         let positions = this._gameGrid.flat(1)
             .filter(slot => slot.occupied)
@@ -267,16 +286,18 @@ export class GameHandler {
 
 
         let skip: ICoordinate[] = [];
+        let multiBlock
         for (const position of positions) {
             if (skip.includes(position)) {
                 continue;
             }
-            let multiBlock = this.multiBlockAtPosition(position);
-            this._multiBlocks.push(multiBlock);
-            multiBlock.blocks.forEach(b => {
-                skip.push(b.position)
+            multiBlock = this.multiBlockAtPosition(position);
+            multiBlocks.push(multiBlock);
+            multiBlock.blocks.forEach(block => {
+                skip.push(block.position)
             })
         }
+        return multiBlocks;
     }
 
     private multiBlockAtPosition(position: ICoordinate): MultiBlock {

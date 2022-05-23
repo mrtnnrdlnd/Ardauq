@@ -1,5 +1,5 @@
 
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var app = (function () {
     'use strict';
 
@@ -1228,7 +1228,8 @@ var app = (function () {
                 let rows = this.removeFullRows();
                 let accRows = rows.length;
                 while (rows.length > 0) {
-                    this.reconstructAllMultiBlocksAbove(this.gameGrid.length);
+                    this._multiBlocks = [];
+                    this._multiBlocks = this.reconstructAllMultiBlocksAbove(this.gameGrid.length);
                     yield new Promise(r => setTimeout(r, 150));
                     this.applyGravity();
                     yield new Promise(r => setTimeout(r, 300));
@@ -1242,6 +1243,19 @@ var app = (function () {
                 this._paused = false;
                 this.newPiece();
             });
+        }
+        static copy(obj) {
+            let copiedObject = {};
+            Object.keys(obj).forEach(function (key) {
+                if (typeof obj[key] === 'object') {
+                    copiedObject[key] = GameHandler.copy(obj[key]);
+                }
+                else {
+                    copiedObject[key] = obj[key];
+                }
+            });
+            return copiedObject;
+            // return JSON.parse(JSON.stringify(obj));
         }
         fallDown(multiBlock) {
             if (multiBlock == undefined) {
@@ -1366,22 +1380,24 @@ var app = (function () {
             }
         }
         reconstructAllMultiBlocksAbove(row) {
-            this._multiBlocks = [];
+            let multiBlocks = [];
             let positions = this._gameGrid.flat(1)
                 .filter(slot => slot.occupied)
                 .map(slot => slot.block.position)
                 .filter(position => position.y < row);
             let skip = [];
+            let multiBlock;
             for (const position of positions) {
                 if (skip.includes(position)) {
                     continue;
                 }
-                let multiBlock = this.multiBlockAtPosition(position);
-                this._multiBlocks.push(multiBlock);
-                multiBlock.blocks.forEach(b => {
-                    skip.push(b.position);
+                multiBlock = this.multiBlockAtPosition(position);
+                multiBlocks.push(multiBlock);
+                multiBlock.blocks.forEach(block => {
+                    skip.push(block.position);
                 });
             }
+            return multiBlocks;
         }
         multiBlockAtPosition(position) {
             let multiBlock = new MultiBlock();
@@ -1441,10 +1457,24 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (93:4) {#if !gameHandler.paused}
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[19] = list[i];
+    	return child_ctx;
+    }
+
+    // (90:4) {#if !gameHandler.paused}
     function create_if_block(ctx) {
+    	let t;
     	let multiblockcomponent;
     	let current;
+    	let each_value_1 = /*gameHandler*/ ctx[0].activeBlock.blocks;
+    	validate_each_argument(each_value_1);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
 
     	multiblockcomponent = new MultiBlockComponent({
     			props: {
@@ -1456,13 +1486,47 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t = space();
     			create_component(multiblockcomponent.$$.fragment);
     		},
     		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert_dev(target, t, anchor);
     			mount_component(multiblockcomponent, target, anchor);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
+    			if (dirty & /*gameHandler, blockSize*/ 9) {
+    				each_value_1 = /*gameHandler*/ ctx[0].activeBlock.blocks;
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(t.parentNode, t);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+
     			const multiblockcomponent_changes = {};
     			if (dirty & /*gameHandler*/ 1) multiblockcomponent_changes.block = /*gameHandler*/ ctx[0].activeBlock;
     			multiblockcomponent.$set(multiblockcomponent_changes);
@@ -1477,6 +1541,8 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(t);
     			destroy_component(multiblockcomponent, detaching);
     		}
     	};
@@ -1485,7 +1551,51 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(93:4) {#if !gameHandler.paused}",
+    		source: "(90:4) {#if !gameHandler.paused}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (91:8) {#each gameHandler.activeBlock.blocks as block}
+    function create_each_block_1(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			set_style(div, "position", "absolute");
+    			set_style(div, "left", (/*gameHandler*/ ctx[0].activeBlock.position.x + /*block*/ ctx[19].position.x) * /*blockSize*/ ctx[3] + "px");
+    			set_style(div, "top", (/*gameHandler*/ ctx[0].activeBlock.position.y + /*block*/ ctx[19].position.y) * /*blockSize*/ ctx[3] + "px");
+    			set_style(div, "width", /*blockSize*/ ctx[3] + "px");
+    			set_style(div, "bottom", "0px");
+    			set_style(div, "background-color", "#F3F3F3");
+    			attr_dev(div, "class", "svelte-16lvmwx");
+    			add_location(div, file$1, 91, 12, 3350);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*gameHandler*/ 1) {
+    				set_style(div, "left", (/*gameHandler*/ ctx[0].activeBlock.position.x + /*block*/ ctx[19].position.x) * /*blockSize*/ ctx[3] + "px");
+    			}
+
+    			if (dirty & /*gameHandler*/ 1) {
+    				set_style(div, "top", (/*gameHandler*/ ctx[0].activeBlock.position.y + /*block*/ ctx[19].position.y) * /*blockSize*/ ctx[3] + "px");
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(91:8) {#each gameHandler.activeBlock.blocks as block}",
     		ctx
     	});
 
@@ -1614,31 +1724,31 @@ var app = (function () {
     			t11 = space();
     			div8 = element("div");
     			div8.textContent = "right";
-    			attr_dev(div0, "class", "score svelte-th82cf");
+    			attr_dev(div0, "class", "score svelte-16lvmwx");
     			add_location(div0, file$1, 73, 24, 2523);
-    			attr_dev(div1, "class", "containing svelte-th82cf");
+    			attr_dev(div1, "class", "containing svelte-16lvmwx");
     			add_location(div1, file$1, 73, 0, 2499);
-    			attr_dev(div2, "class", "button svelte-th82cf");
+    			attr_dev(div2, "class", "button svelte-16lvmwx");
     			add_location(div2, file$1, 77, 8, 2703);
     			set_style(div3, "margin-top", "250px");
-    			attr_dev(div3, "class", "button svelte-th82cf");
+    			attr_dev(div3, "class", "button svelte-16lvmwx");
     			add_location(div3, file$1, 80, 8, 2864);
-    			attr_dev(div4, "class", "button svelte-th82cf");
+    			attr_dev(div4, "class", "button svelte-16lvmwx");
     			add_location(div4, file$1, 83, 8, 3008);
-    			attr_dev(div5, "class", "left svelte-th82cf");
+    			attr_dev(div5, "class", "left svelte-16lvmwx");
     			add_location(div5, file$1, 76, 4, 2675);
     			attr_dev(div6, "id", "gameArea");
     			set_style(div6, "--game-width", /*areaWidth*/ ctx[1] * /*blockSize*/ ctx[3] + "px");
     			set_style(div6, "--game-height", /*areaHeight*/ ctx[2] * /*blockSize*/ ctx[3] + "px");
-    			attr_dev(div6, "class", "svelte-th82cf");
+    			attr_dev(div6, "class", "svelte-16lvmwx");
     			add_location(div6, file$1, 88, 0, 3142);
-    			attr_dev(div7, "class", "button svelte-th82cf");
-    			add_location(div7, file$1, 99, 8, 3838);
-    			attr_dev(div8, "class", "button svelte-th82cf");
-    			add_location(div8, file$1, 102, 8, 3952);
-    			attr_dev(div9, "class", "right svelte-th82cf");
+    			attr_dev(div7, "class", "button svelte-16lvmwx");
+    			add_location(div7, file$1, 99, 8, 3858);
+    			attr_dev(div8, "class", "button svelte-16lvmwx");
+    			add_location(div8, file$1, 102, 8, 3972);
+    			attr_dev(div9, "class", "right svelte-16lvmwx");
     			add_location(div9, file$1, 87, 4, 3121);
-    			attr_dev(div10, "class", "containing svelte-th82cf");
+    			attr_dev(div10, "class", "containing svelte-16lvmwx");
     			set_style(div10, "--block-size", /*blockSize*/ ctx[3]);
     			set_style(div10, "--nr-of-columns", /*areaWidth*/ ctx[1]);
     			add_location(div10, file$1, 74, 0, 2575);

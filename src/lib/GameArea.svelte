@@ -92,11 +92,11 @@ import { GameHandler } from "./types/GameHandler";
     </div>
     <div class="right">
 <div id="gameArea" style="--game-width: {areaWidth*blockSize}px; --game-height: {areaHeight*blockSize}px">
-    <!-- {#each gameHandler.activeBlock.blocks as block}
-        <rect x={(gameHandler.activeBlock.position.x + block.position.x) * blockSize} y={(gameHandler.activeBlock.position.y + block.position.y) * blockSize} width={blockSize} height={gameHandler.gameGrid.length * blockSize} fill="#F3F3F3"/>
-    {/each} -->
     {#if !gameHandler.paused}
-    <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
+        {#each gameHandler.activeBlock.blocks as block}
+            <div style="position:absolute; left:{(gameHandler.activeBlock.position.x + block.position.x) * blockSize}px; top:{(gameHandler.activeBlock.position.y + block.position.y) * blockSize}px; width:{blockSize}px; bottom:0px; background-color:#F3F3F3"/>
+        {/each}
+        <MultiBlockComponent block={gameHandler.activeBlock} size={blockSize}/>
     {/if}
     {#each gameHandler.multiBlocks as multiBlock}
         <MultiBlockComponent block={multiBlock} size="{blockSize}" />
@@ -152,6 +152,7 @@ import { GameHandler } from "./types/GameHandler";
     }
 
 	#gameArea {
+        position:relative;
         box-sizing:content-box;
 		border: 1px solid #bbb;
 		width: var(--game-width);
